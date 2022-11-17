@@ -1,0 +1,1 @@
+project structure: https://reactnativeexample.com/react-native-project-structure/
