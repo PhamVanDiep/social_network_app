@@ -118,12 +118,14 @@
 import React from "react";
 import { Checkbox, View } from "react-native-ui-lib";
 import {Button, Colors} from 'react-native-ui-lib';
+import Register from "./src/views/register";
 
 export default function App() {
   return(
-    <View>
-      <Button label={'Press'} size={Button.sizes.medium} backgroundColor={Colors.red30}/>
-      <Checkbox value={false} onValueChange={() => console.log('value changed')}/>
-    </View>
+    // <View>
+    //   <Button label={'Press'} size={Button.sizes.medium} backgroundColor={Colors.red30}/>
+    //   <Checkbox value={false} onValueChange={() => console.log('value changed')}/>
+    // </View>
+    <Register></Register>
   );
 }
