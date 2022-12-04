@@ -6665,6 +6665,11 @@
     "parse-svg-path" "^0.1.2"
     "use-memo-one" "^1.1.1"
 
+"react-native-sqlite-storage@^6.0.1":
+  "integrity" "sha512-1tDFjrint6X6qSYKf3gDyz+XB+X79jfiL6xTugKHPRtF0WvqMtVgdLuNqZunIXjNEvNtNVEbXaeZ6MsguFu00A=="
+  "resolved" "https://registry.npmjs.org/react-native-sqlite-storage/-/react-native-sqlite-storage-6.0.1.tgz"
+  "version" "6.0.1"
+
 "react-native-text-size@4.0.0-rc.1":
   "integrity" "sha512-CysqjU2jK6Yc+a+kEI222pUyTY2ywcU2HqbFqf1KHymW6OPTdvBBHqbEJKL0QiLhQaFYDbqicM+h990s9TP00g=="
   "resolved" "https://registry.npmjs.org/react-native-text-size/-/react-native-text-size-4.0.0-rc.1.tgz"
@@ -6691,7 +6696,7 @@
     "tinycolor2" "^1.4.2"
     "url-parse" "^1.2.0"
 
-"react-native@*", "react-native@>=0.59.0", "react-native@>=0.64.1", "react-native@0.70.6":
+"react-native@*", "react-native@>=0.14.0", "react-native@>=0.59.0", "react-native@>=0.64.1", "react-native@0.70.6":
   "integrity" "sha512-xtQdImPHnwgraEx3HIZFOF+D1hJ9bC5mfpIdUGoMHRws6OmvHAjmFpO6qfdnaQ29vwbmZRq7yf14sbury74R/w=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.70.6.tgz"
   "version" "0.70.6"
