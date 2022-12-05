@@ -62,7 +62,7 @@ export const authSlice = createSlice({
         state.authLoading = false;
         state.isAuthenticated = false;
         state.token = null;
-      })
+      });
   },
 });
 
