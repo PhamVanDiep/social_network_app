@@ -20,8 +20,7 @@ export async function CreateTable() {
         + "token TEXT, "
         + "last_access VARCHAR(50)"
         + ")"
-    let exec = await this.ExecuteQuery(query, []);
-    console.log(exec);
+    await this.ExecuteQuery(query, []);
 }
 
 export async function getAllUsers() {
@@ -34,6 +33,33 @@ export async function getAllUsers() {
     }
 }
 
+export async function getFirstUsers() {
+    let query = "SELECT * FROM users LIMIT 1";
+    let exec = await this.ExecuteQuery(query, []);
+    let res = [];
+    for (let i = 0; i < exec.rows.length; i++) {
+        let item = exec.rows.item(i);
+        res.push(item);
+    }
+    return res;
+}
+
+export async function getToken() {
+    try {
+        const currentUser = await getFirstUsers();
+        if (currentUser.length > 0) {
+            const user = currentUser[0];
+
+            return user.token;
+        }
+
+        return '';
+    } catch (error) {
+        console.log(error);
+        return '';
+    }
+}
+
 export async function insertUser(user) {
     let query = "INSERT INTO users (_id, phonenumber, username, password, token, last_access) VALUES (?, ?, ?, ?, ?, ?)";
     let exec = await this.ExecuteQuery(query, user);
@@ -43,6 +69,12 @@ export async function insertUser(user) {
 export async function updateUser(data) {
     let query = "UPDATE users SET phonenumber = ?, username = ?, password = ?, token = ?, last_access = ? WHERE _id = ?";
     let exec = await this.ExecuteQuery(query, data);
+    console.log(exec);
+}
+
+export async function deleteAllUsers() {
+    let query = "DELETE FROM users";
+    let exec = await this.ExecuteQuery(query, []);
     console.log(exec);
 }
 
