@@ -16,7 +16,7 @@ class Login extends Component {
     render() {
         return (
 
-            <View centerV paddingH-20 paddingT-50 marginT-350>
+            <View centerV paddingH-20 paddingT-50 marginT-200>
                 <View centerH>
                     <Avatar source={{ uri: 'https://lh3.googleusercontent.com/-cw77lUnOvmI/AAAAAAAAAAI/AAAAAAAAAAA/WMNck32dKbc/s181-c/104220521160525129167.jpg' }} />
                 </View>
@@ -47,8 +47,8 @@ class Login extends Component {
                     />
                 </View>
 
-                <View centerH row marginT-20>
-                    <Button marginL-10 text100 link label="Đăng nhập"></Button>
+                <View centerH row marginT-30>
+                    <Button marginL-10 text60 link label="Đăng nhập"></Button>
                 </View>
             </View>
 
