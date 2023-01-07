@@ -8,6 +8,7 @@ class SQLiteTest extends React.Component {
 
     async componentDidMount() {
         // await CreateTable();
+
         let data = [1, "0111222333", "dieppv", "user123", "sdfasjhdfgkjasdhgfaudsfgadf", "123123"];
         await insertUser(data);
         // await getAllUsers();
@@ -17,6 +18,7 @@ class SQLiteTest extends React.Component {
         // await deleteUser([1]);
         await getAllUsers();
         await getUserById([1]);
+
     }
 
     render() {

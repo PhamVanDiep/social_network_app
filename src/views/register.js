@@ -153,8 +153,10 @@ const Register = () => {
                 />
             </View>
 
+
             <View marginT-20>
                 <Button borderRadius={50} disabled={!validForm} label="Đăng ký" onPress={() => register(name, gender, phonenumber, password)} />
+
             </View>
 
             <View centerH row marginT-20>
