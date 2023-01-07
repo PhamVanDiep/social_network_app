@@ -1,9 +1,14 @@
-import React, { Component, useState } from 'react'
-import { TextInput, StyleSheet, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import React, { Component, useEffect, useState } from 'react'
+import { TextInput, StyleSheet, ScrollView, ActivityIndicator, Alert, BackHandler } from 'react-native';
 import { Avatar, Incubator, View, RadioGroup, RadioButton, Text, Checkbox, Colors, Button, Icon, Assets, Image, TouchableOpacity } from 'react-native-ui-lib';
 import _ from 'lodash';
-import { StyleCustom } from './assets/styles';
+import { StyleCustom } from '../assets/styles';
 import { Dimensions } from 'react-native';
+import NotifyIcon from '../assets/svg/notification';
+import LogoutIcon from '../assets/svg/logout';
+import PostService from '../helper/services/PostService';
+import UserService from '../helper/services/UserService';
+
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -34,7 +39,7 @@ const Settings = () => {
     return (
         <View>
             <View paddingT-5 bg-white 
-            flex spread
+            flex-apply spread
             style={{height:windowHeight}}>
             <View>
                 <View style={{
@@ -54,12 +59,12 @@ const Settings = () => {
                 <View marginT-10>
                     <TouchableOpacity flex-apply row paddingH-20 paddingV-10
                     onPress={changeNotify}>
-                        <Icon source={require('../assets/icons/arrow_left.png')} size={24}></Icon>
+                        <NotifyIcon></NotifyIcon>
                         <Text marginL-20>{notify}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity flex-apply row paddingH-20 paddingV-10
                     onPress={changeAuth}>
-                        <Icon source={require('../assets/icons/arrow_left.png')} size={24}></Icon>
+                        <LogoutIcon></LogoutIcon>
                         <Text marginL-20>{login}</Text>
                     </TouchableOpacity>
                 </View>
@@ -68,7 +73,7 @@ const Settings = () => {
             marginH-20
             paddingH-20 paddingV-10 br40
             flex-apply center marginB-30
-            onPress={() => console.log('pressed')}>
+            onPress={() => BackHandler.exitApp()}>
                 <Text white>Thoát ứng dụng</Text>
             </TouchableOpacity>
         </View>
@@ -76,5 +81,52 @@ const Settings = () => {
         </View>
     );
 }
+
+// const Settings = ({navigation}) => {
+    
+//     var post_id = '639db920e1077b28b889119f';
+//     const [username, setUsername] = useState(''); 
+//     const [avatar, setAvatar] = useState('');
+//     const [post, setPost] = useState({});
+
+//     useEffect(() => {
+//         PostService.getById(post_id).then( (res) => {
+//             setPost(res.data.data);
+//             console.log(post._id);
+//             UserService.get(res.data.data.author).then((response) => {
+//                 // console.log(response.data.data.username);
+//                 setUsername(response.data.data.username);
+//                 setAvatar(response.data.data.avatar);
+//                 console.log(username);
+//                 console.log(avatar); 
+//             })
+//         })
+//         // .then(result => {
+        
+//         // })
+//         .catch((err) => {
+//             console.log(err);
+//         });
+//     }, []);
+
+//     return (
+//         <View flex-apply center>
+//             <TouchableOpacity onPress={() => {
+//                 console.log(avatar);
+//                 navigation.navigate('DetailPost', 
+//                 {
+//                     post: post,
+//                     avatar: avatar, 
+//                     username: username
+//                 });
+//             }}>
+//                 <Text grey20>
+//                     click me
+//                 </Text>
+//             </TouchableOpacity>
+//         </View>
+//     );
+
+// }
 
 export default Settings;
