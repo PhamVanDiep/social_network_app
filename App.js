@@ -116,16 +116,19 @@
 
 // export default App;
 import React from "react";
+import { ScrollView } from "react-native-gesture-handler";
 import { Checkbox, View } from "react-native-ui-lib";
 import {Button, Colors} from 'react-native-ui-lib';
 import Register from "./src/views/register";
+import Settings from "./src/views/settings-page";
+import DetailPost from "./src/components/detail_post";
 
 export default function App() {
   return(
-    // <View>
-    //   <Button label={'Press'} size={Button.sizes.medium} backgroundColor={Colors.red30}/>
-    //   <Checkbox value={false} onValueChange={() => console.log('value changed')}/>
-    // </View>
-    <Register></Register>
+    <ScrollView>
+      {/* <Register></Register> */}
+      {/* <Settings></Settings> */}
+      <DetailPost></DetailPost>
+    </ScrollView>
   );
 }

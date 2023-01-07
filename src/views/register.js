@@ -116,7 +116,7 @@ class Register extends Component {
 
                 <View centerH row marginT-20>
                     <Text>
-                        Bạn đã có tài khoản?
+                        Bạn đã có tài khoản?????
                     </Text>
                     <Button marginL-10 text80 link label="Đăng nhập"></Button>
                 </View>
