@@ -2,9 +2,9 @@ import { firebaseConfig } from "../constants/firebaseConfig";
 import { initializeApp } from 'firebase/app';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
-export async function uploadImageToFirebase(file, location) {
+export async function uploadImageToFirebase(assets, location) {
     initializeApp(firebaseConfig);
-    let assets = file.assets;
+    // let assets = file.assets;
     let response = [];
     for (let i = 0; i < assets.length; i++) {
         const fileName = assets[i].fileName;
