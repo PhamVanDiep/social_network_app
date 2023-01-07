@@ -1,102 +1,135 @@
-import React, { Component, useState } from 'react'
+
+import React, { Component, useEffect, useState } from 'react'
 import { TextInput, StyleSheet, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { Avatar, Incubator, View, RadioGroup, RadioButton, Text, Checkbox, Colors, Button, Icon, Assets, Image, TouchableOpacity } from 'react-native-ui-lib';
 import _ from 'lodash';
-import { StyleCustom } from '../views/assets/styles';
+import { StyleCustom } from '../assets/styles';
 import { Dimensions } from 'react-native';
+import LikeIcon from '../assets/svg/like';
+import CommentIcon from '../assets/svg/cmt';
+import LikedIcon from '../assets/svg/liked';
+import MenuIcon from '../assets/svg/menu';
+import PostService from '../helper/services/PostService';
+import UserService from '../helper/services/UserService';
+// import { setDateDiff } from "../utils/utils";
+
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 StyleCustom();
 
-var imgArray = [];
-const { TextField } = Incubator;
-const options = ['Nam', 'Nữ'];
-const images = [
-    require('../assets/icons/image.png'),
-    require('../assets/icons/image.png'),
-    require('../assets/icons/image.png'),
-    require('../assets/icons/image.png'),
-];
 
-const showImage = () => {
-    var i = 0;
-    images.forEach(img => {
-        console.log(img);
-        imgArray.push(
-            <Image source={img} 
-            margin-5 key={i}
-            style={{width:null, borderRadius:10}}></Image>
-        );
-        i++;
-    });
-}
-showImage();
+const DetailPost = ({navigation, route}) => {
+    const auth = '639d85f7658d870d64fc9656' ;
 
-const DetailPost = () => {
+    const {post, avatar, username} = route.params;
+    const [imgArray, setImgArray] = useState([]);
 
+    const [likePost, setLikePost] = useState(route.params.post.like.length);
+    const [comment, setComment] = useState(route.params.post.countComments);
     var [like, setLike] = useState('Like');
-    var [likeImg, setLikeImg] = useState(require('../assets/icons/like.jpg'));
+    var [likeImg, setLikeImg] = useState(<LikeIcon></LikeIcon>);
 
-    function changeLike() {
-        if(like === 'Like') {
-            setLike('Liked');
-            setLikeImg(require('../assets/icons/liked.png'));
+    useEffect(() => {
+        console.log(route.params.post.images[0]);
+        console.log(route.params.post.images.length);
+        if(route.params.post.isLike) {
+            setLike('Like ');
+            setLikeImg(<LikedIcon></LikedIcon>);
         }
         else {
             setLike('Like');
-            setLikeImg(require('../assets/icons/like.jpg'));
+            setLikeImg(<LikedIcon></LikedIcon>);
         }
+    }, []);
+
+    useEffect( () => {
+        
+    },
+        [likeImg]);
+
+    function changeLike() {
+        if(like === 'Like') {
+            setLike('Like ');
+            setLikeImg(<LikedIcon></LikedIcon>);
+            PostService.like(post._id);
+            setLikePost(likePost+1);
+        }
+        // else {
+        //     setLike('Like');
+        //     setLikeImg(<LikeIcon></LikeIcon>);
+        // }
     }
+
+
+
     return (
        <ScrollView bg-white style={{backgroundColor: '#fff'}}>
-            <View paddingH-20>
+            <View paddingH-10>
                 {/* ten nguoi dang */}
                 <View flex-apply spread row center>
                     <View flex row paddingT-10>
-                        <Avatar source={require('../assets/icons/avatar.png')}
+                        <Avatar source={{uri:route.params.avatar}}
                         style={{width:40, height:40, borderRadius:5}}></Avatar>
                         <View marginL-8>
                             <Text h4>
-                                Bui Khac Dat
+                                {route.params.username}
                             </Text>
                             <Text style={{opacity: 0.5}}>
-                                10h
+                                {route.params.post.createdAt}
+                                {/* { setDateDiff(props.createdAt) } */}
+
                             </Text>
                         </View>
                     </View>
 
-                    <View>
-                        <Icon source={require('../assets/icons/arrow_left.png')} size={24}></Icon>
-                    </View>
+
+                    
+                    <TouchableOpacity onPress={function() {console.log("menu touch");}}>
+                        <MenuIcon></MenuIcon>
+                    </TouchableOpacity>
+                    
+
                 </View>
 
                 {/* content post */}
                 <View paddingB-4 marginT-16
                 style={{borderBottomWidth:1, borderColor: '#f0f0f1'}}>
                     <Text marginB-8 normalSize>
-                        This is content of this post.
+
+                        {route.params.post.described}
+
                     </Text>
 
                     <View flex-apply row spread>
                         <View flex-apply row center>
-                            <Icon source={require('../assets/icons/like.jpg')} size={12} /> 
-                            <Text marginL-4>567</Text>                           
+
+                            <LikedIcon style={{width:"50%", height:"50%"}}></LikedIcon>
+                            <Text marginL-4>
+                                {likePost}
+                            </Text>                           
                         </View>
                         <View flex-apply row >
-                            <Text>30</Text>
-                            <Text marginL-4>binh luan</Text>
+                            <Text>
+                                {comment}
+                            </Text>
+                            <Text marginL-4>bình luận</Text>
+
                         </View>
                     </View>
                 </View>
 
                 {/* like + comment */}
-                <View flex-apply row spread>
+
+                <View flex-apply row spread marginV-10>
                     <TouchableOpacity flex-apply row center
                     style={{width: '50%'}}
                     onPress={changeLike}>
-                        <Icon source={likeImg} size={30} />
+                        <View>
+                            {likeImg}
+                        </View>
+
                         <Text marginL-4 style={{opacity:0.5}}>{like}</Text>
                     </TouchableOpacity>
 
@@ -105,15 +138,28 @@ const DetailPost = () => {
                       onPress={function() {
                         console.log("click")
                     }}>
-                        <Icon source={require('../assets/icons/comment.png')} size={20} />
-                        <Text marginL-4>Comments</Text>
+
+                        <CommentIcon></CommentIcon>
+                        <Text marginL-4>Bình luận</Text>
+
                     </TouchableOpacity>
                 </View>
             </View>
 
+            
             <View>
-                {imgArray}
+                {route.params.post.images.map((element, key) => {
+                    return (
+                        <Image marginV-2
+                        style={{height:200, width:windowWidth}}   
+                        source={{uri:element}} 
+                        key={key}    
+                    />
+                    );
+                })}
             </View>
+            
+
        </ScrollView>
     );
 }
