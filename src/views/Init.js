@@ -1,16 +1,16 @@
 import { COLOR } from '../constants/constants';
-import React, {useEffect} from 'react';
-import {View, StyleSheet, ActivityIndicator} from 'react-native';
-import {Avatar} from 'react-native-ui-lib';
-import {useDispatch} from 'react-redux';
+import React, { useEffect } from 'react';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { Avatar } from 'react-native-ui-lib';
+import { useDispatch } from 'react-redux';
 import {
   CreateTable,
   getFirstUsers,
   getAllUsers,
 } from '../helper/sqlite/user_query';
-import {loadToken, loadUser} from '../store/auth/authSlice';
+import { loadToken, loadUser } from '../store/auth/authSlice';
 
-const Init = ({navigation}) => {
+const Init = ({ navigation }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -20,7 +20,11 @@ const Init = ({navigation}) => {
       console.log(userData);
       if (userData.user) {
         // const user = await dispatch(loadUser()).unwrap();
-        navigation.navigate('HomePage');
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'HomePage' }],
+        });
+        // navigation.navigate('HomePage');
       } else {
         navigation.navigate('LogIn');
       }
@@ -31,7 +35,7 @@ const Init = ({navigation}) => {
     <View style={styles.loadingScreen}>
       <Avatar source={require('../../assets/images/logo.png')} size={100} />
       <View style={styles.dotsWrapper}>
-        <ActivityIndicator size="large" color={COLOR.icon}/>
+        <ActivityIndicator size="large" color={COLOR.icon} />
       </View>
     </View>
   );
