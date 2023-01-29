@@ -26,6 +26,10 @@ class PostService {
         return http.post(`${POSTS_API.like}/${id}`);
     }
 
+    search(body) {
+        return http.post(`${POSTS_API.search}`, body);
+    }
+
     report(id, body) {
         return http.post(`${POSTS_API.report}/${id}`, body);
     }

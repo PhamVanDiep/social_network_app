@@ -1,4 +1,3 @@
-
 import React, { Component, useEffect, useState } from 'react'
 import { TextInput, StyleSheet, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { Avatar, Incubator, View, RadioGroup, RadioButton, Text, Checkbox, Colors, Button, Icon, Assets, Image, TouchableOpacity } from 'react-native-ui-lib';
@@ -13,12 +12,10 @@ import PostService from '../helper/services/PostService';
 import UserService from '../helper/services/UserService';
 // import { setDateDiff } from "../utils/utils";
 
-
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 StyleCustom();
-
 
 const DetailPost = ({navigation, route}) => {
     const auth = '639d85f7658d870d64fc9656' ;
@@ -79,32 +76,26 @@ const DetailPost = ({navigation, route}) => {
                             <Text style={{opacity: 0.5}}>
                                 {route.params.post.createdAt}
                                 {/* { setDateDiff(props.createdAt) } */}
-
                             </Text>
                         </View>
                     </View>
-
 
                     
                     <TouchableOpacity onPress={function() {console.log("menu touch");}}>
                         <MenuIcon></MenuIcon>
                     </TouchableOpacity>
                     
-
                 </View>
 
                 {/* content post */}
                 <View paddingB-4 marginT-16
                 style={{borderBottomWidth:1, borderColor: '#f0f0f1'}}>
                     <Text marginB-8 normalSize>
-
                         {route.params.post.described}
-
                     </Text>
 
                     <View flex-apply row spread>
                         <View flex-apply row center>
-
                             <LikedIcon style={{width:"50%", height:"50%"}}></LikedIcon>
                             <Text marginL-4>
                                 {likePost}
@@ -115,13 +106,11 @@ const DetailPost = ({navigation, route}) => {
                                 {comment}
                             </Text>
                             <Text marginL-4>bình luận</Text>
-
                         </View>
                     </View>
                 </View>
 
                 {/* like + comment */}
-
                 <View flex-apply row spread marginV-10>
                     <TouchableOpacity flex-apply row center
                     style={{width: '50%'}}
@@ -129,7 +118,6 @@ const DetailPost = ({navigation, route}) => {
                         <View>
                             {likeImg}
                         </View>
-
                         <Text marginL-4 style={{opacity:0.5}}>{like}</Text>
                     </TouchableOpacity>
 
@@ -138,10 +126,8 @@ const DetailPost = ({navigation, route}) => {
                       onPress={function() {
                         console.log("click")
                     }}>
-
                         <CommentIcon></CommentIcon>
                         <Text marginL-4>Bình luận</Text>
-
                     </TouchableOpacity>
                 </View>
             </View>
@@ -159,7 +145,6 @@ const DetailPost = ({navigation, route}) => {
                 })}
             </View>
             
-
        </ScrollView>
     );
 }

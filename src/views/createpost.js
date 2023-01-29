@@ -1,161 +1,190 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, Image } from 'react-native';
-import { Avatar, Incubator, View, Button, Dialog, PanningProvider, ModalProps } from 'react-native-ui-lib';
+import { SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import { Avatar, Incubator, View, Button, PanningProvider, ModalProps } from 'react-native-ui-lib';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import Picture from '../../assets/icon/image';
-import Demo from '../../assets/icon/icon-demo';
 import { uploadImageToFirebase } from '../utils/upload_image';
 import { COLOR, FIREBASE_CONFIG } from '../constants/constants';
 import PostService from '../helper/services/PostService';
+import UserService from '../helper/services/UserService';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faImage } from "@fortawesome/free-regular-svg-icons";
 import ListImageComponent from '../components/ListImageComponent';
 import Video from 'react-native-video';
+import Notification from '../utils/Notification';
+import {buttonColor} from '../constants/theme/config';
 
 
 const { TextField } = Incubator;
 const CreatePost = () => {
+    const [user, setUser] = useState({});
     const [isVideo, setVideo] = useState(false);
-    const [imageAsset, setImageAsset] = useState([]);
+    const [asset, setAsset] = useState([]);
     const [content, setContent] = useState('');
     const [dialogVisible, setVisible] = useState(false);
     // image uris after saving to firebase
     const [imageURI, setImageURI] = useState([]);
+    const [isLoading, setLoading] = useState(false);
 
     const modalProps = { supportedOrientations: ['portrait', 'landscape'] };
     const headerProps = { title: 'Lựa chọn phương thức' };
 
-    // const setAssets = (assets => {
-    //     let newAssets = image.assets;
-    //     for (value of assets) {
-    //         if (newAssets.length < 4) {
-    //             newAssets.push(value);
-    //         } else {
-    //             // Thong bao
-    //             break;
-    //         }
-    //     }
-    //     const updateImage = {
-    //         assets: newAssets
-    //     };
-    //     setImageAsset(newAssets);
-    //     setImage(updateImage);
-    //     console.log("image update:", image);
-    // })
+    const [widenInput, setWiden] = useState(false);
 
+    useEffect(() => {
+        UserService.getCurrentUser()
+            .then(res => {
+                console.log("res: " + res.data.data)
+                setUser(res.data.data);
+                console.log(res.data.data.avatar);
+            })
+            .catch(error => {
+                Notification.showErrorMessage('Đã xảy ra lỗi khi lấy thông tin người dùng');
+            })
+    }, [])
 
-    const runCamera = () => {
+    const removeImageOrVideo = (item) => {
+        if (item.type.includes('video')) setVideo(false);
+        setAsset(current => current.filter(value => {
+            return value.uri !== item.uri;
+        }));
+    };
+
+    const runCamera = async () => {
         let options = {
             mediaType: 'mixed',
-            videoQuality: 'low',
+            videoQuality: 'high',
             durationLimit: 10,
-            selectionLimit: 1,
+            selectionLimit: 0,
             presentationStyle: 'pageSheet'
         };
-        launchCamera(options, (response) => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
-                alert(response.customButton);
-            } else {
-                if (response) {
-                    let list = response.assets;
+        let response = await launchImageLibrary(options);
+        console.log("response", response);
+        if (response) {
+            console.log('asset length b4 add', asset.length);
+            let notification = false;
+            let list = response.assets;
+            let hasVideo = false;
+            if (isVideo) notification = true;
+            else {
+                if (asset.length >= 4) notification = true;
+                else {
                     for (value of list) {
                         if (value.type.includes('video')) {
-                            if (!isVideo && imageAsset.length === 0) {
-                                setImageAsset([...imageAsset, value]);
-                                setVideo(true);
-                                break;
-                            } else {
-                                // Thong bao chi duoc 1 video hoac 4 anh
-                            }
-                        } else 
-                        if (value.type.includes('image')) {
-                            if (!isVideo && imageAsset.length < 4) {
-                                setImageAsset([...imageAsset, value]);
-                            }
+                            hasVideo = true;
+                        }
+                    }
+                    if (hasVideo) {
+                        console.log("list length", list.length == 1);
+                        if (asset.length == 0 && list.length == 1) {
+                            setAsset([...asset, ...list]);
+                            setVideo(true);
+                        }
+                        else {
+                            notification = true;
+                        }
+                    } else {
+                        if ((asset.length + list.length) <= 4) {
+                            setAsset([...asset, ...list]);
+                        } else {
+                            notification = true;
                         }
                     }
                 }
             }
-        });
+            if (notification) Notification.showWarningMessage('Chỉ được đăng 1 video hoặc tối đa 4 ảnh');
+        }
+        setVisible(false);
 
     };
 
-    const runImageLibrary = () => {
+    const runImageLibrary = async () => {
         let options = {
             mediaType: 'mixed',
-            videoQuality: 'low',
+            videoQuality: 'high',
             durationLimit: 10,
-            selectionLimit: 1,
+            selectionLimit: 0,
             presentationStyle: 'pageSheet'
         };
-        launchImageLibrary(options, (response) => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
-                alert(response.customButton);
-            } else {
-                if (response) {
-                    let list = response.assets;
+        let response = await launchImageLibrary(options);
+        console.log("response", response);
+        if (response) {
+            console.log('asset length b4 add', asset.length);
+            let notification = false;
+            let list = response.assets;
+            let hasVideo = false;
+            if (isVideo) notification = true;
+            else {
+                if (asset.length >= 4) notification = true;
+                else {
                     for (value of list) {
-                        console.log("value", value);
                         if (value.type.includes('video')) {
-                            if (!isVideo && imageAsset.length === 0) {
-                                setImageAsset([...imageAsset, value]);
-                                setVideo(true);
-                                break;
-                            } else {
-                                // Thong bao chi duoc 1 video hoac 4 anh
-                            }
-                        } else 
-                        if (value.type.includes('image')) {
-                            if (!isVideo && imageAsset.length < 4) {
-                                setImageAsset([...imageAsset, value]);
-                            }
+                            hasVideo = true;
+                        }
+                    }
+                    if (hasVideo) {
+                        console.log("list length", list.length == 1);
+                        if (asset.length == 0 && list.length == 1) {
+                            setAsset([...asset, ...list]);
+                            setVideo(true);
+                        }
+                        else {
+                            notification = true;
+                        }
+                    } else {
+                        if ((asset.length + list.length) <= 4) {
+                            setAsset([...asset, ...list]);
+                        } else {
+                            notification = true;
                         }
                     }
                 }
             }
+            if (notification) Notification.showWarningMessage('Chỉ được đăng 1 video hoặc tối đa 4 ảnh');
         }
-        );
-        console.log(imageAsset);
+        console.log(asset);
+        setVisible(false);
     };
 
     const handleUploadPhoto = async () => {
-        const images = await uploadImageToFirebase(imageAsset, `${FIREBASE_CONFIG.IMAGES_STORAGE}`);
-        setImageURI([...imageURI, ...images]);
+        setLoading(true);
+        console.log("asset before upload to firebase", asset);
+        const images = await uploadImageToFirebase(asset, `${FIREBASE_CONFIG.IMAGES_STORAGE}` + `${user.phonenumber}`);
+        // setImageURI([...imageURI, ...images]);
+        // console.log(imageURI);
         if (!isVideo) {
             const requestBody = {
                 described: content,
-                images: imageURI,
+                images: images,
                 videos: null,
             };
-            PostService.create(requestBody)
-            .then(res => {
-                console.log(res.data.data)
-            })
-            .catch(err => console.log(err));
+            await PostService.create(requestBody)
+                .then(res => {
+                    console.log(res.data.data);
+                    Notification.showSuccessMessage('Tạo bài viết thành công');
+                })
+                .catch(err => {
+                    console.log(err);
+                    Notification.showErrorMessage('Lỗi khi tạo bài viết');
+                });
         } else {
             const requestBody = {
                 described: content,
                 images: null,
-                videos: imageURI,
+                videos: images,
             };
-            PostService.create(requestBody)
+            await PostService.create(requestBody)
                 .then(res => {
                     console.log(res.data.data)
+                    Notification.showSuccessMessage('Tạo bài viết thành công');
                 })
-                .catch(err => console.log(err));
+                .catch(err => {
+                    console.log(err);
+                    Notification.showErrorMessage('Lỗi khi tạo bài viết');
+                });
         }
         // console.log(images);
         // console.log(imageURI);
+        setLoading(false);
     };
 
     return (
@@ -164,10 +193,10 @@ const CreatePost = () => {
                 <View flex row style={styles.infoBar}>
                     <View flex row>
                         <Avatar source={{
-                            uri: 'https://lh3.googleusercontent.com/-cw77lUnOvmI/AAAAAAAAAAI/AAAAAAAAAAA/WMNck32dKbc/s181-c/104220521160525129167.jpg',
+                            uri: user.avatar,
                         }} size={60}></Avatar>
                         <View marginL-10>
-                            <Text style={styles.userName}>Nguyễn Quang Vũ</Text>
+                            <Text style={styles.userName}>{user.username}</Text>
                             <Text marginL-10>Chia sẻ cảm xúc của bạn</Text>
                         </View>
                     </View>
@@ -178,19 +207,30 @@ const CreatePost = () => {
                 <View flex style={styles.input}>
                     <View>
                         <TextInput
-                            multiline
-                            numberOfLines={4}
+                            multiline={true}
+                            // numberOfLines={widenInput?4:1}
                             onChangeText={text => setContent(text)}
                             style={styles.text}
                             placeholder='Bạn đang nghĩ gì?'
+                            value={content}
+                        // onFocus={() => setWiden(true)}
+                        // onBlur={() => setWiden(false)}
                         />
                     </View>
                 </View>
 
-                {!isVideo && <ListImageComponent listImage={imageAsset} isVideo={false} />}
-                {isVideo && <ListImageComponent video={imageAsset[0]} isVideo={true} />}
+                {!isVideo && <ListImageComponent listImage={asset} isVideo={false} removeMethod={removeImageOrVideo} />}
+                {isVideo && <ListImageComponent video={asset[0]} isVideo={true} removeMethod={removeImageOrVideo} />}
             </ScrollView>
-            <Button margin-10 borderRadius={0} label="Đăng bài" onPress={() => handleUploadPhoto()} />
+            <Button margin-10 borderRadius={5} style={{height: 42}} color={buttonColor.color1} onPress={() => handleUploadPhoto()}>
+                <Text style={{
+                    color: 'white',
+                    fontWeight: 'bold',
+                    fontSize: 18,
+                    lineHeight: 18,
+                }}>Đăng bài</Text>
+                <ActivityIndicator style={{position: 'absolute', right: 10}} animating={isLoading} size="large" color={COLOR.icon} />
+            </Button>
             <Incubator.Dialog
                 visible={dialogVisible}
                 onDismiss={() => setVisible(false)}
@@ -234,8 +274,8 @@ const styles = StyleSheet.create({
     },
     infoBar: {
         paddingHorizontal: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#b9b9b9',
+        // borderBottomWidth: 1,
+        // borderBottomColor: '#b9b9b9',
         paddingVertical: 10,
         alignItems: 'center',
     },
@@ -243,8 +283,9 @@ const styles = StyleSheet.create({
         fontSize: 25,
         fontWeight: '500',
         lineHeight: 80,
-        borderBottomWidth: 1,
-        borderBottomColor: '#b9b9b9',
+        paddingBottom: 10
+        // borderBottomWidth: 1,
+        // borderBottomColor: '#b9b9b9',
     },
     text: {
         paddingHorizontal: 10,
