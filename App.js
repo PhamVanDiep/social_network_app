@@ -3,13 +3,13 @@ import { View } from 'react-native-ui-lib';
 import RootNavigator from './src/routes/RootNavigator';
 
 import FlashMessage from 'react-native-flash-message';
-import { useNetInfo } from "@react-native-community/netinfo";
+import { useNetInfo } from '@react-native-community/netinfo';
 import Notification from './src/utils/Notification';
 
 export default function App() {
   const [isConnected, setIsConnected] = useState(true);
   const netInfo = useNetInfo();
-  
+
   useEffect(() => {
     if (netInfo.type != 'wifi' && netInfo.type != 'cellular') {
       setIsConnected(false);
@@ -27,7 +27,8 @@ export default function App() {
   }, [isConnected]);
 
   return (
-    <View style={{ height: '100%', flex: 1 }} pointerEvents={isConnected ? 'auto' : 'none'}>
+    <View
+      style={{ height: '100%', flex: 1 }}>
       <RootNavigator />
       <FlashMessage position={isConnected ? 'top' : 'bottom'} />
     </View>

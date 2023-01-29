@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-
-import { StatusBar, ScrollView, View, RefreshControl, ActivityIndicator } from 'react-native';
+import { StatusBar, ScrollView, View, RefreshControl } from 'react-native';
 
 import AppBar from './AppBar';
 import ToolBar from './ToolBar';
@@ -23,7 +22,6 @@ const HomePageComponent = ({ navigation }) => {
     const [feedsTmp, setFeedsTmp] = useState([]);
     const scrollViewRef = useRef();
     const [refreshing, setRefreshing] = useState(false);
-    const [bottomLoading, setBottomLoading] = useState(false);
 
     useEffect(() => {
         setRefreshing(true);
@@ -73,7 +71,6 @@ const HomePageComponent = ({ navigation }) => {
     }
 
     const appendData = () => {
-        setBottomLoading(true);
         PostService.getList('', feeds.length, 10)
             .then(res => {
                 setFeedsTmp(res.data.data);
@@ -94,12 +91,6 @@ const HomePageComponent = ({ navigation }) => {
             }
         })
         setFeeds([...feeds, ...tmp]);
-        // if (tmp.length <= 0) {
-        //     Notification.showWarningMessage('Thông báo', 'Bạn đã xem hết tin');
-        // } else {
-        //     setFeeds([...feeds, ...tmp]);
-        // }
-        setBottomLoading(false);
     }
 
     return (
@@ -145,7 +136,6 @@ const HomePageComponent = ({ navigation }) => {
                                 </View>
                             ))
                         }
-                        <ActivityIndicator size="small" color={COLOR.icon} animating={bottomLoading} />
                     </ScrollView>
                 }
             </View>

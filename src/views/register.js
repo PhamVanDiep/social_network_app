@@ -43,7 +43,10 @@ const Register = ({navigation}) => {
     UserService.register(requestBody)
       .then(res => {
         Notification.showSuccessMessage('Đăng ký thành công');
-        console.log(res.data.data);
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'LogIn'}],
+        });
       })
       .catch(err => {
         console.log(err);

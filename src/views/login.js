@@ -24,7 +24,10 @@ const Login = ({navigation}) => {
       const loginData = await dispatch(loginUser(body)).unwrap();
       if (loginData.success) {
         Notification.showSuccessMessage('Đăng nhập thành công');
-        navigation.navigate('TopTop');
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'HomePage'}],
+        });
       } else {
         Notification.showErrorMessage(loginData.message);
       }
