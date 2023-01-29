@@ -2,8 +2,8 @@ import { POSTS_API } from "../../constants/api";
 import http from "./http-common";
 
 class PostService {
-    getList() {
-        return http.get(`${POSTS_API.getList}`);
+    getList(userId, skip, limit) {
+        return http.get(`${POSTS_API.getList}?userId=${userId}&skip=${skip}&limit=${limit}`);
     }
 
     create(body) {
