@@ -289,7 +289,7 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
           </View>
 
           <View style={styles.Separator} />
-
+          <View style={{ width: '100%', height: 1, backgroundColor: '#F2F4F4', marginTop: 5 }}/>
           <View style={styles.FooterMenu}>
             <View style={styles.Button}>
               <View style={styles.Icon}>
