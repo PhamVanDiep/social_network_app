@@ -1,15 +1,15 @@
-import { View, Text, Image } from 'react-native';
-import React, { useState } from 'react';
+import {View, Text, Image} from 'react-native';
+import React, {useState} from 'react';
 import InputBar from '../components/input-bar';
 import MyButton from '../components/button';
-import { buttonColor } from '../constants/theme/config';
+import {buttonColor} from '../constants/theme/config';
 import UserService from '../helper/services/UserService';
 import Notification from '../utils/Notification';
-import { Avatar } from 'react-native-ui-lib';
-import { useDispatch } from 'react-redux';
-import { loadUser, loginUser } from '../store/auth/authSlice';
+import {Avatar} from 'react-native-ui-lib';
+import {useDispatch} from 'react-redux';
+import {loadUser, loginUser} from '../store/auth/authSlice';
 
-const Login = ({ navigation }) => {
+const Login = ({navigation}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
@@ -17,16 +17,15 @@ const Login = ({ navigation }) => {
   const onPressLogin = async () => {
     let body = {
       phonenumber: username,
-      password: password
-    }
+      password: password,
+    };
 
     try {
       const loginData = await dispatch(loginUser(body)).unwrap();
       if (loginData.success) {
         Notification.showSuccessMessage('Đăng nhập thành công');
         navigation.navigate('TopTop');
-      }
-      else {
+      } else {
         Notification.showErrorMessage(loginData.message);
       }
     } catch (error) {
@@ -39,7 +38,7 @@ const Login = ({ navigation }) => {
   };
   return (
     <View>
-      <View style={{ width: '100%', height: 200, alignItems: 'center' }}>
+      <View style={{width: '100%', height: 200, alignItems: 'center'}}>
         <Image
           source={require('../../assets/images/cover.png')}
           resizeMode="cover"
@@ -48,8 +47,16 @@ const Login = ({ navigation }) => {
             height: 200,
           }}
         />
-        <Avatar containerStyle={{ position: 'absolute', top: 60, height: 80, width: 80 }}
-          source={require('../../assets/images/logo.png')} size={80} />
+        <Avatar
+          containerStyle={{
+            position: 'absolute',
+            top: 60,
+            height: 80,
+            width: 80,
+          }}
+          source={require('../../assets/images/logo.png')}
+          size={80}
+        />
       </View>
       <View
         style={{
@@ -57,7 +64,11 @@ const Login = ({ navigation }) => {
           paddingTop: 72,
           alignItems: 'center',
         }}>
-        <InputBar placeholder={'Email hoặc số điện thoại'} setInput={setUsername} keyboardType={'email-address'} />
+        <InputBar
+          placeholder={'Email hoặc số điện thoại'}
+          setInput={setUsername}
+          keyboardType={'email-address'}
+        />
         <InputBar
           placeholder={'Mật khẩu'}
           isSecure={true}

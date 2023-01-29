@@ -16,7 +16,8 @@ export const POSTS_API = {
     delete: 'posts/delete',
     getList: 'posts/list',
     like: 'postLike/action',
-    report: 'postReport/create'
+    report: 'postReport/create',
+    search: 'posts/search'
 }
 
 export const POST_COMMENTS_API = {

@@ -1,6 +1,5 @@
-import { Button, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { Button, ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import React from 'react';
-import Demo from '../../assets/icon/icon-demo';
 import { useDispatch } from 'react-redux';
 import { logoutUser } from '../store/auth/authSlice';
 
@@ -8,7 +7,7 @@ const TmpScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   return (
-    <View>
+    <ScrollView>
       <TouchableHighlight
         style={styles.button}
         onPress={() => {
@@ -22,6 +21,13 @@ const TmpScreen = ({ navigation }) => {
           navigation.navigate('LogIn');
         }}>
         <Text style={styles.text}>LogIn</Text>
+      </TouchableHighlight>
+      <TouchableHighlight
+        style={styles.button}
+        onPress={() => {
+          navigation.navigate('HomePage');
+        }}>
+        <Text style={styles.text}>Homepage</Text>
       </TouchableHighlight>
       <TouchableHighlight
         style={styles.button}
@@ -61,9 +67,18 @@ const TmpScreen = ({ navigation }) => {
       <TouchableHighlight
         style={styles.button}
         onPress={() => {
-          navigation.navigate('CommentPage', { postId: '639db920e1077b28b889119f' });
+          navigation.navigate('CommentPage', {
+            postId: '639db920e1077b28b889119f',
+          });
         }}>
         <Text style={styles.text}>Comment Page</Text>
+      </TouchableHighlight>
+      <TouchableHighlight
+        style={styles.button}
+        onPress={() => {
+          navigation.navigate('UploadImageTest');
+        }}>
+        <Text style={styles.text}>Upload Image Test</Text>
       </TouchableHighlight>
       <TouchableHighlight
         style={styles.alertButton}
@@ -73,8 +88,7 @@ const TmpScreen = ({ navigation }) => {
         }}>
         <Text style={styles.text}>Logout</Text>
       </TouchableHighlight>
-      <Demo />
-    </View>
+    </ScrollView>
   );
 };
 

@@ -19,11 +19,19 @@ const FriendshipComponent = () => {
             >
                 <Tab.Item
                     title="Lời mời kết bạn"
-                    titleStyle={{ fontSize: 18, color: COLOR.text }}
+                    titleStyle={(active) => ({
+                        color: active ? COLOR.icon : COLOR.text,
+                        fontSize: 18,
+                        fontFamily: 'Roboto'
+                    })}
                 />
                 <Tab.Item
                     title="Bạn bè"
-                    titleStyle={{ fontSize: 18, color: COLOR.text }}
+                    titleStyle={(active) => ({
+                        color: active ? COLOR.icon : COLOR.text,
+                        fontSize: 18,
+                        fontFamily: 'Roboto'
+                    })}
                 />
             </Tab>
 
