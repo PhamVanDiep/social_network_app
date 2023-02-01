@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://10.0.2.2:8000/api/v1/';
+export const BASE_URL = 'http://localhost:8000/api/v1/';
 export const FIREBASE_CONFIG = {
     AVATAR_STORAGE: 'avatar',
     COVER_IMAGE_STORAGE: 'cover_image',
@@ -7,7 +7,8 @@ export const FIREBASE_CONFIG = {
 export const COLOR = {
     icon: '#789AF7',
     text: '#000000',
-    background: '#FFFFFF'
+    background: '#FFFFFF',
+    placeholder: '#808B96',
 }
 
 export const httpStatus = {

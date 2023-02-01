@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import moment from 'moment/moment';
 import { httpStatus } from '../../constants/constants';
 import UserService from '../../helper/services/UserService';
 import { deleteAllUsers, getToken, insertUser } from '../../helper/sqlite/user_query';
@@ -44,11 +45,16 @@ export const loginUser = createAsyncThunk('auth/login', async (loginForm) => {
     const response = await UserService.login(loginForm);
 
     if (response.status == httpStatus.OK) {
-      setAuthToken(response.data.token);
-      await insertUser([1, '0343', 'dat', 'dat', response.data.token, 'hihihi']);
-      return { success: true, user: response.data.data }
+      console.log(response.data);
+      const { data: { _id, phonenumber, username }, token } = response.data;
+      setAuthToken(token);
+      let res = await insertUser([_id, phonenumber, username, loginForm.password, response.data.token, moment().valueOf().toString()]);
+      if (res.code != 0) {
+        return { success: true, user: response.data.data } 
+      } else {
+        return { success: false, message: 'Đã xảy ra lỗi khi lưu thông tin đăng nhập' }
+      }
     }
-
     return { success: false, message: 'Tên đăng nhập hoặc mật khẩu chưa chính xác' }
   } catch (error) {
     console.log(error);
