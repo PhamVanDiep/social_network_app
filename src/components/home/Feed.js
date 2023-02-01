@@ -6,7 +6,7 @@ import { Avatar } from 'react-native-ui-lib';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faEarthAsia } from '@fortawesome/free-solid-svg-icons/faEarthAsia';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons/faEllipsis';
-import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes';
+import Video from 'react-native-video';
 
 import { faCircle } from '@fortawesome/free-solid-svg-icons/faCircle';
 
@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
   },
   ActionTitle: {
     fontWeight: '500',
+    color: COLOR.text
   },
   Footer: {
     paddingVertical: 11,
@@ -195,7 +196,7 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
                 {described}
               </Text>
               <TouchableOpacity onPress={() => setSeeMore(true)} style={{ fontSize: 16, marginLeft: 12 }}>
-                <Text style={{ fontSize: 15 }}>Xem Thêm</Text>
+                <Text style={{ fontSize: 15, color: COLOR.placeholder }}>Xem Thêm</Text>
               </TouchableOpacity>
             </View>
             :
@@ -209,17 +210,25 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
           />
         }
         {
-          images && images.length === 0 && (videos && videos.length === 1) && <View
+          videos?.length > 0 && 
+          <Video source={{ uri: videos[0] }}   // Can be a URL or a local file.
+            ref={(ref) => {
+              this.player = ref
+            }}
+            style={{ width: '100%', height: 450 }}        // Callback when video cannot be loaded
+            resizeMode={'cover'}
+            controls={true} // Hien thi pause next, ...
+            // paused={true}
           />
         }
         {
-          images.length === 1 && <Image
+          images?.length === 1 && <Image
             style={styles.Photo}
             source={{ uri: images[0] }}
           />
         }
         {
-          images.length === 2 && <View style={{ display: 'flex', width: '100%', height: 300, marginTop: 9 }}>
+          images?.length === 2 && <View style={{ display: 'flex', width: '100%', height: 300, marginTop: 9, flexDirection: 'row' }}>
             {images.map((image, index) => <Image
               style={styles.PhotoHalf}
               source={{ uri: images[index] }}
@@ -229,7 +238,7 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
           </View>
         }
         {
-          images.length === 3 && <View style={{ display: 'flex', flexDirection: 'row', marginTop: 9 }}>
+          images?.length === 3 && <View style={{ display: 'flex', flexDirection: 'row', marginTop: 9 }}>
             <View style={{ display: 'flex', flexDirection: 'column', width: '50%', height: 300 }}>
               <Image
                 style={styles.PhotoQuater}
@@ -247,7 +256,7 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
           </View>
         }
         {
-          images.length === 4 && <View style={{ display: 'flex', flexDirection: 'row', width: '100%', height: 300, marginTop: 9 }}>
+          images?.length === 4 && <View style={{ display: 'flex', flexDirection: 'row', width: '100%', height: 300, marginTop: 9 }}>
             <View style={{ display: 'flex', flexDirection: 'column', width: '50%', height: 300 }}>
               <Image
                 style={styles.PhotoQuater}
@@ -281,10 +290,10 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
                   color="white"
                 />
               </View>
-              <Text style={styles.TextCount}>{likes.length + bonus} likes</Text>
+              <Text style={styles.TextCount}>{likes.length + bonus} lượt thích</Text>
             </View>
             <TouchableOpacity onPress={() => handleCommentPress(id)}>
-              <Text style={styles.TextCount}>{countComments} comments</Text>
+              <Text style={styles.TextCount}>{countComments} bình luận</Text>
             </TouchableOpacity>
           </View>
 
@@ -302,7 +311,7 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
                 </TouchableOpacity>
               </View>
               <TouchableOpacity onPress={() => handleLikePress()}>
-                <Text style={styles.ActionTitle}>Like</Text>
+                <Text style={[styles.ActionTitle, { color: isLiked ? COLOR.icon : COLOR.text }]}>Thích</Text>
               </TouchableOpacity>
             </View>
 
@@ -313,7 +322,7 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
                 </TouchableOpacity>
               </View>
               <TouchableOpacity onPress={() => handleCommentPress(id)}>
-                <Text style={styles.ActionTitle}>Comment</Text>
+                <Text style={styles.ActionTitle}>Bình luận</Text>
               </TouchableOpacity>
             </View>
 

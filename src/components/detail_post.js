@@ -1,7 +1,6 @@
-import React, { Component, useEffect, useState } from 'react'
-import { TextInput, StyleSheet, ScrollView, ActivityIndicator, Alert } from 'react-native';
-import { Avatar, Incubator, View, RadioGroup, RadioButton, Text, Checkbox, Colors, Button, Icon, Assets, Image, TouchableOpacity } from 'react-native-ui-lib';
-import _ from 'lodash';
+import React, { useEffect, useState } from 'react'
+import { ScrollView } from 'react-native';
+import { Avatar, View, Text, Image, TouchableOpacity } from 'react-native-ui-lib';
 import { StyleCustom } from '../assets/styles';
 import { Dimensions } from 'react-native';
 import LikeIcon from '../assets/svg/like';
@@ -9,8 +8,6 @@ import CommentIcon from '../assets/svg/cmt';
 import LikedIcon from '../assets/svg/liked';
 import MenuIcon from '../assets/svg/menu';
 import PostService from '../helper/services/PostService';
-import UserService from '../helper/services/UserService';
-// import { setDateDiff } from "../utils/utils";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -18,13 +15,12 @@ const windowHeight = Dimensions.get('window').height;
 StyleCustom();
 
 const DetailPost = ({navigation, route}) => {
-    const auth = '639d85f7658d870d64fc9656' ;
-
     const {post, avatar, username} = route.params;
     const [imgArray, setImgArray] = useState([]);
 
     const [likePost, setLikePost] = useState(route.params.post.like.length);
     const [comment, setComment] = useState(route.params.post.countComments);
+
     var [like, setLike] = useState('Like');
     var [likeImg, setLikeImg] = useState(<LikeIcon></LikeIcon>);
 
@@ -41,22 +37,19 @@ const DetailPost = ({navigation, route}) => {
         }
     }, []);
 
-    useEffect( () => {
-        
-    },
-        [likeImg]);
-
     function changeLike() {
         if(like === 'Like') {
             setLike('Like ');
             setLikeImg(<LikedIcon></LikedIcon>);
-            PostService.like(post._id);
             setLikePost(likePost+1);
         }
-        // else {
-        //     setLike('Like');
-        //     setLikeImg(<LikeIcon></LikeIcon>);
-        // }
+        else {
+            setLike('Like');
+            setLikeImg(<LikeIcon></LikeIcon>);
+            setLikePost(likePost-1);
+        }
+
+        PostService.like(post._id);
     }
 
 
@@ -124,7 +117,10 @@ const DetailPost = ({navigation, route}) => {
                     <TouchableOpacity flex-apply row center
                     style={{width: '50%', opacity:0.5}}
                       onPress={function() {
-                        console.log("click")
+                        navigation.navigate('CommentPage', 
+                        {
+                            postId: route.params.post._id,
+                        });
                     }}>
                         <CommentIcon></CommentIcon>
                         <Text marginL-4>Bình luận</Text>

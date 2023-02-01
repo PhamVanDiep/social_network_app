@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#EBEDEF',
-        borderRadius: 20,
+        borderRadius: 50,
         paddingLeft: 10,
         paddingRight: 10,
         marginTop: 10
@@ -47,7 +47,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#EBEDEF',
         color: COLOR.text,
         fontSize: 18,
-        fontFamily: 'Roboto'
+        fontFamily: 'Roboto',
+        borderBottomRightRadius: 50,
+        borderTopRightRadius: 50
     },
     scrollStyle: {
         width: '100%',
@@ -152,6 +154,7 @@ const ListFriendComponent = () => {
                     <TextInput
                         style={styles.searchInput}
                         placeholder={'Tìm kiếm...'}
+                        placeholderTextColor={COLOR.placeholder}
                         underlineColorAndroid="transparent"
                         onChangeText={(value) => filtFriends(value)}
                     />

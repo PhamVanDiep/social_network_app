@@ -53,7 +53,8 @@ const HomePageComponent = ({ navigation }) => {
 
     const onRefresh = () => {
         setRefreshing(true);
-        loadData(0, feeds.length + 5);
+        setFeeds([]);
+        loadData(0, 10);
     }
 
     handleAvatarPress = () => {
@@ -120,6 +121,7 @@ const HomePageComponent = ({ navigation }) => {
                         <View style={{ width: '100%', height: 1, backgroundColor: '#AEB6BF' }} />
                         <ToolBar />
                         {
+                            feeds.length > 0 && 
                             feeds.map(item => (
                                 <View key={item._id}>
                                     <Feed

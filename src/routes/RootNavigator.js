@@ -14,6 +14,7 @@ import ListFriendComponent from '../components/friends/list/ListFriendComponent'
 import FriendshipComponent from '../components/friends/FriendshipComponent';
 import Homepage from '../views/Homepage';
 import { UploadImage } from '../test/upload';
+import DetailPost from '../components/detail_post';
 
 const Stack = createNativeStackNavigator();
 
@@ -36,6 +37,7 @@ const RootNavigator = () => {
         <Stack.Screen name="LogIn" component={Login} options={options} />
         <Stack.Screen name="SignUp" component={Register} options={options} />
         <Stack.Screen name="CreatePost" component={CreatePost} options={options} />
+        <Stack.Screen name='DetailPost' component={DetailPost} options={options} />
         <Stack.Screen name="PickImg" component={PickImg} options={options} />
         <Stack.Screen
           name="PersonalProfileScreen"
