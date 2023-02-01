@@ -5,7 +5,7 @@ import { Avatar } from 'react-native-ui-lib';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faEarthAsia } from '@fortawesome/free-solid-svg-icons/faEarthAsia';
-import { faEllipsis } from '@fortawesome/free-solid-svg-icons/faEllipsis';
+import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 import Video from 'react-native-video';
 
 import { faCircle } from '@fortawesome/free-solid-svg-icons/faCircle';
@@ -143,7 +143,6 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
       })
   }, [authorId]);
 
-
   const handleLikePress = () => {
     PostService.like(id)
       .then(res => {
@@ -164,9 +163,11 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
       <View style={styles.Container}>
         <View style={styles.Header}>
           <View style={styles.Row}>
-            <Avatar source={{ uri: author.avatar }} size={36} />
+            <Avatar source={{ uri: author.avatar }} size={36} onPress={() => handleAvatarPress()} />
             <View style={{ paddingLeft: 10 }}>
-              <Text style={styles.User}>{author.username}</Text>
+              <TouchableOpacity onPress={() => handleAvatarPress()}>
+                <Text style={styles.User}>{author.username}</Text>
+              </TouchableOpacity>
               <View style={styles.Row}>
                 <Text style={styles.Time}>{setDateDiff(createdAt)}</Text>
                 <FontAwesomeIcon
@@ -186,23 +187,29 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
               flexDirection: 'row',
               alignItems: 'center',
             }}>
-            <FontAwesomeIcon icon={faEllipsis} size={18} color="#222121" />
+            <TouchableOpacity onPress={() => showReportDialog(id)}>
+              <FontAwesomeIcon icon={faCircleExclamation} size={18} color="#222121" />
+            </TouchableOpacity>
           </View>
         </View>
         {
           described.length > 36 && !isSeeMore ?
             <View>
-              <Text numberOfLines={1} style={styles.Post}>
-                {described}
-              </Text>
+              <TouchableOpacity onPress={() => handlePostDetail(id)}>
+                <Text numberOfLines={1} style={styles.Post}>
+                  {described}
+                </Text>
+              </TouchableOpacity>
               <TouchableOpacity onPress={() => setSeeMore(true)} style={{ fontSize: 16, marginLeft: 12 }}>
                 <Text style={{ fontSize: 15, color: COLOR.placeholder }}>Xem Thêm</Text>
               </TouchableOpacity>
             </View>
             :
-            <Text style={styles.Post}>
-              {described}
-            </Text>
+            <TouchableOpacity onPress={() => handlePostDetail(id)}>
+              <Text style={styles.Post}>
+                {described}
+              </Text>
+            </TouchableOpacity>
         }
 
         {
@@ -210,7 +217,7 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
           />
         }
         {
-          videos?.length > 0 && 
+          videos?.length > 0 &&
           <Video source={{ uri: videos[0] }}   // Can be a URL or a local file.
             ref={(ref) => {
               this.player = ref
@@ -218,7 +225,7 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
             style={{ width: '100%', height: 450 }}        // Callback when video cannot be loaded
             resizeMode={'cover'}
             controls={true} // Hien thi pause next, ...
-            // paused={true}
+          // paused={true}
           />
         }
         {
@@ -228,56 +235,65 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
           />
         }
         {
-          images?.length === 2 && <View style={{ display: 'flex', width: '100%', height: 300, marginTop: 9, flexDirection: 'row' }}>
-            {images.map((image, index) => <Image
-              style={styles.PhotoHalf}
-              source={{ uri: images[index] }}
-            />
-            )
-            }
-          </View>
+          images?.length === 2 &&
+          <TouchableOpacity onPress={() => handlePostDetail(id)}>
+            <View style={{ display: 'flex', width: '100%', height: 300, marginTop: 9, flexDirection: 'row' }}>
+              {images.map((image, index) => <Image
+                style={styles.PhotoHalf}
+                source={{ uri: images[index] }}
+              />
+              )
+              }
+            </View>
+          </TouchableOpacity>
         }
         {
-          images?.length === 3 && <View style={{ display: 'flex', flexDirection: 'row', marginTop: 9 }}>
-            <View style={{ display: 'flex', flexDirection: 'column', width: '50%', height: 300 }}>
+          images?.length === 3 &&
+          <TouchableOpacity onPress={() => handlePostDetail(id)}>
+            <View style={{ display: 'flex', flexDirection: 'row', marginTop: 9 }}>
+              <View style={{ display: 'flex', flexDirection: 'column', width: '50%', height: 300 }}>
+                <Image
+                  style={styles.PhotoQuater}
+                  source={{ uri: images[0] }}
+                />
+                <Image
+                  style={styles.PhotoQuater}
+                  source={{ uri: images[1] }}
+                />
+              </View>
               <Image
-                style={styles.PhotoQuater}
-                source={{ uri: images[0] }}
-              />
-              <Image
-                style={styles.PhotoQuater}
-                source={{ uri: images[1] }}
-              />
-            </View>
-            <Image
-              style={styles.PhotoHalf}
-              source={{ uri: images[2] }}
-            />
-          </View>
-        }
-        {
-          images?.length === 4 && <View style={{ display: 'flex', flexDirection: 'row', width: '100%', height: 300, marginTop: 9 }}>
-            <View style={{ display: 'flex', flexDirection: 'column', width: '50%', height: 300 }}>
-              <Image
-                style={styles.PhotoQuater}
-                source={{ uri: images[0] }}
-              />
-              <Image
-                style={styles.PhotoQuater}
-                source={{ uri: images[1] }}
-              />
-            </View>
-            <View style={{ display: 'flex', flexDirection: 'column', width: '50%', height: 300 }}>
-              <Image
-                style={styles.PhotoQuater}
+                style={styles.PhotoHalf}
                 source={{ uri: images[2] }}
               />
-              <Image
-                style={styles.PhotoQuater}
-                source={{ uri: images[3] }}
-              />
             </View>
-          </View>
+          </TouchableOpacity>
+        }
+        {
+          images?.length === 4 &&
+          <TouchableOpacity onPress={() => handlePostDetail(id)}>
+            <View style={{ display: 'flex', flexDirection: 'row', width: '100%', height: 300, marginTop: 9 }}>
+              <View style={{ display: 'flex', flexDirection: 'column', width: '50%', height: 300 }}>
+                <Image
+                  style={styles.PhotoQuater}
+                  source={{ uri: images[0] }}
+                />
+                <Image
+                  style={styles.PhotoQuater}
+                  source={{ uri: images[1] }}
+                />
+              </View>
+              <View style={{ display: 'flex', flexDirection: 'column', width: '50%', height: 300 }}>
+                <Image
+                  style={styles.PhotoQuater}
+                  source={{ uri: images[2] }}
+                />
+                <Image
+                  style={styles.PhotoQuater}
+                  source={{ uri: images[3] }}
+                />
+              </View>
+            </View>
+          </TouchableOpacity>
         }
 
         <View style={styles.Footer}>
@@ -298,7 +314,7 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
           </View>
 
           <View style={styles.Separator} />
-          <View style={{ width: '100%', height: 1, backgroundColor: '#F2F4F4', marginTop: 5 }}/>
+          <View style={{ width: '100%', height: 1, backgroundColor: '#F2F4F4', marginTop: 5 }} />
           <View style={styles.FooterMenu}>
             <View style={styles.Button}>
               <View style={styles.Icon}>

@@ -46,7 +46,7 @@ export const loginUser = createAsyncThunk('auth/login', async (loginForm) => {
 
     if (response.status == httpStatus.OK) {
       console.log(response.data);
-      const { data: { _id, phonenumber, username }, token } = response.data;
+      const { data: { _id, phonenumber, username, avatar }, token } = response.data;
       setAuthToken(token);
       let res = await insertUser([_id, phonenumber, username, loginForm.password, response.data.token, moment().valueOf().toString()]);
       if (res.code != 0) {

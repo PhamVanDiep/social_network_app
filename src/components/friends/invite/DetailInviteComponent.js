@@ -73,9 +73,11 @@ const DetailInviteComponent = ({senderId}) => {
 
     return(
         <View style={styles.container}>
-            <Avatar source={{ uri: sender.avatar }} size={80}></Avatar>
+            <Avatar source={{ uri: sender.avatar }} size={80} onPress={() => handleAvatarPress(sender.block_diary) }></Avatar>
             <View style={styles.rightPane}>
-                <Text style={styles.userName}>{ sender.username }</Text>
+                <TouchableOpacity onPress={() => handleAvatarPress(sender.block_diary) }>
+                    <Text style={styles.userName}>{ sender.username }</Text>
+                </TouchableOpacity>
                 <View style={styles.btnWrapper}>
                     <TouchableOpacity style={[styles.acceptBtn, styles.btn]} onPress={() => handleClick('accept', senderId)}>
                         <Text style={[styles.btnContent, {color: '#FFFFFF'}]}>{"Chấp nhận"}</Text>
