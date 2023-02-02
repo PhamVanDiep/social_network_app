@@ -167,44 +167,48 @@ const CreatePost = () => {
 
     const handleUploadPhoto = async () => {
         setLoading(true);
-        console.log("asset before upload to firebase", asset);
-        const images = await uploadImageToFirebase(asset, `${FIREBASE_CONFIG.IMAGES_STORAGE}/${user.phonenumber}`);
-        // setImageURI([...imageURI, ...images]);
-        // console.log(imageURI);
-        if (!isVideo) {
-            const requestBody = {
-                described: content,
-                images: images,
-                videos: null,
-            };
-            await PostService.create(requestBody)
-                .then(res => {
-                    console.log(res.data.data);
-                    // Notification.showSuccessMessage('Tạo bài viết thành công');
-                })
-                .catch(err => {
-                    console.log(err);
-                    Notification.showErrorMessage('Lỗi khi tạo bài viết');
-                });
+        if (content.length <= 0 && asset.length <= 0) {
+            Notification.showWarningMessage('Hãy thêm nội dung bạn muốn chia sẻ!');
         } else {
-            const requestBody = {
-                described: content,
-                images: null,
-                videos: images,
-            };
-            await PostService.create(requestBody)
-                .then(res => {
-                    console.log(res.data.data)
-                    // Notification.showSuccessMessage('Tạo bài viết thành công');
-                })
-                .catch(err => {
-                    console.log(err);
-                    Notification.showErrorMessage('Lỗi khi tạo bài viết');
-                });
+            console.log("asset before upload to firebase", asset);
+            const images = await uploadImageToFirebase(asset, `${FIREBASE_CONFIG.IMAGES_STORAGE}/${user.phonenumber}`);
+            // setImageURI([...imageURI, ...images]);
+            // console.log(imageURI);
+            if (!isVideo) {
+                const requestBody = {
+                    described: content,
+                    images: images,
+                    videos: null,
+                };
+                await PostService.create(requestBody)
+                    .then(res => {
+                        console.log(res.data.data);
+                        // Notification.showSuccessMessage('Tạo bài viết thành công');
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        Notification.showErrorMessage('Lỗi khi tạo bài viết');
+                    });
+            } else {
+                const requestBody = {
+                    described: content,
+                    images: null,
+                    videos: images,
+                };
+                await PostService.create(requestBody)
+                    .then(res => {
+                        console.log(res.data.data)
+                        // Notification.showSuccessMessage('Tạo bài viết thành công');
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        Notification.showErrorMessage('Lỗi khi tạo bài viết');
+                    });
+            }
+            // console.log(images);
+            // console.log(imageURI);
+            Notification.showSuccessMessage('Tạo bài viết thành công');
         }
-        // console.log(images);
-        // console.log(imageURI);
-        Notification.showSuccessMessage('Tạo bài viết thành công');
         setLoading(false);
     };
 
