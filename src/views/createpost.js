@@ -5,18 +5,19 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { uploadImageToFirebase } from '../utils/upload_image';
 import { COLOR, FIREBASE_CONFIG } from '../constants/constants';
 import PostService from '../helper/services/PostService';
-import UserService from '../helper/services/UserService';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faImage } from "@fortawesome/free-regular-svg-icons";
 import ListImageComponent from '../components/ListImageComponent';
 import Video from 'react-native-video';
 import Notification from '../utils/Notification';
-import {buttonColor} from '../constants/theme/config';
+import { buttonColor } from '../constants/theme/config';
+import { selectAuth } from '../store/auth/authSlice';
+import { useSelector } from 'react-redux';
 
 
 const { TextField } = Incubator;
 const CreatePost = () => {
-    const [user, setUser] = useState({});
+    // const [user, setUser] = useState({});
     const [isVideo, setVideo] = useState(false);
     const [asset, setAsset] = useState([]);
     const [content, setContent] = useState('');
@@ -30,17 +31,19 @@ const CreatePost = () => {
 
     const [widenInput, setWiden] = useState(false);
 
-    useEffect(() => {
-        UserService.getCurrentUser()
-            .then(res => {
-                console.log("res: " + res.data.data)
-                setUser(res.data.data);
-                console.log(res.data.data.avatar);
-            })
-            .catch(error => {
-                Notification.showErrorMessage('Đã xảy ra lỗi khi lấy thông tin người dùng');
-            })
-    }, [])
+    const { user } = useSelector(selectAuth);
+
+    // useEffect(() => {
+    //     UserService.getCurrentUser()
+    //         .then(res => {
+    //             console.log("res: " + res.data.data)
+    //             setUser(res.data.data);
+    //             console.log(res.data.data.avatar);
+    //         })
+    //         .catch(error => {
+    //             Notification.showErrorMessage('Đã xảy ra lỗi khi lấy thông tin người dùng');
+    //         })
+    // }, [])
 
     const removeImageOrVideo = (item) => {
         if (item.type.includes('video')) setVideo(false);
@@ -49,20 +52,29 @@ const CreatePost = () => {
         }));
     };
 
-    const runCamera = async () => {
+    const runCamera = async (type) => {
         let options = {
-            mediaType: 'mixed',
+            mediaType: type,
             videoQuality: 'high',
             durationLimit: 10,
             selectionLimit: 0,
             presentationStyle: 'pageSheet'
         };
-        let response = await launchImageLibrary(options);
+        let response = await launchCamera(options);
         console.log("response", response);
-        if (response) {
+        if (response && response.assets) {
             console.log('asset length b4 add', asset.length);
             let notification = false;
-            let list = response.assets;
+            let list = response.assets.filter((item) => {
+                if (item.type.includes('video'))
+                    return item.fileSize < (10240 * 1024); //10mb
+                else
+                    return item.fileSize < (4096 * 1024); //4mb
+            });
+            console.log(list);
+            if (list.length < response.assets.length) {
+                Notification.showWarningMessage('Kích thước ảnh phải nhỏ hơn 4mb, video phải nhỏ hơn 10mb');
+            }
             let hasVideo = false;
             if (isVideo) notification = true;
             else {
@@ -107,10 +119,18 @@ const CreatePost = () => {
         };
         let response = await launchImageLibrary(options);
         console.log("response", response);
-        if (response) {
+        if (response && response.assets) {
             console.log('asset length b4 add', asset.length);
             let notification = false;
-            let list = response.assets;
+            let list = response.assets.filter((item) => {
+                if (item.type.includes('video'))
+                    return item.fileSize < (10240 * 1024); //10mb
+                else
+                    return item.fileSize < (4096 * 1024); //4mb
+            });
+            if (list.length < response.assets.length) {
+                Notification.showWarningMessage('Kích thước ảnh phải nhỏ hơn 4mb, video phải nhỏ hơn 10mb');
+            }
             let hasVideo = false;
             if (isVideo) notification = true;
             else {
@@ -148,7 +168,7 @@ const CreatePost = () => {
     const handleUploadPhoto = async () => {
         setLoading(true);
         console.log("asset before upload to firebase", asset);
-        const images = await uploadImageToFirebase(asset, `${FIREBASE_CONFIG.IMAGES_STORAGE}` + `${user.phonenumber}`);
+        const images = await uploadImageToFirebase(asset, `${FIREBASE_CONFIG.IMAGES_STORAGE}/${user.phonenumber}`);
         // setImageURI([...imageURI, ...images]);
         // console.log(imageURI);
         if (!isVideo) {
@@ -160,7 +180,7 @@ const CreatePost = () => {
             await PostService.create(requestBody)
                 .then(res => {
                     console.log(res.data.data);
-                    Notification.showSuccessMessage('Tạo bài viết thành công');
+                    // Notification.showSuccessMessage('Tạo bài viết thành công');
                 })
                 .catch(err => {
                     console.log(err);
@@ -175,7 +195,7 @@ const CreatePost = () => {
             await PostService.create(requestBody)
                 .then(res => {
                     console.log(res.data.data)
-                    Notification.showSuccessMessage('Tạo bài viết thành công');
+                    // Notification.showSuccessMessage('Tạo bài viết thành công');
                 })
                 .catch(err => {
                     console.log(err);
@@ -184,6 +204,7 @@ const CreatePost = () => {
         }
         // console.log(images);
         // console.log(imageURI);
+        Notification.showSuccessMessage('Tạo bài viết thành công');
         setLoading(false);
     };
 
@@ -197,7 +218,7 @@ const CreatePost = () => {
                         }} size={60}></Avatar>
                         <View marginL-10>
                             <Text style={styles.userName}>{user.username}</Text>
-                            <Text marginL-10>Chia sẻ cảm xúc của bạn</Text>
+                            <Text style={{color: COLOR.text}} marginL-10>Chia sẻ cảm xúc của bạn</Text>
                         </View>
                     </View>
                     <TouchableOpacity style={styles.iconWrap} onPress={() => setVisible(true)}>
@@ -212,6 +233,7 @@ const CreatePost = () => {
                             onChangeText={text => setContent(text)}
                             style={styles.text}
                             placeholder='Bạn đang nghĩ gì?'
+                            placeholderTextColor={'#767676'}
                             value={content}
                         // onFocus={() => setWiden(true)}
                         // onBlur={() => setWiden(false)}
@@ -222,14 +244,14 @@ const CreatePost = () => {
                 {!isVideo && <ListImageComponent listImage={asset} isVideo={false} removeMethod={removeImageOrVideo} />}
                 {isVideo && <ListImageComponent video={asset[0]} isVideo={true} removeMethod={removeImageOrVideo} />}
             </ScrollView>
-            <Button margin-10 borderRadius={5} style={{height: 42}} color={buttonColor.color1} onPress={() => handleUploadPhoto()}>
+            <Button margin-10 borderRadius={5} style={{ height: 42 }} color={buttonColor.color1} onPress={() => handleUploadPhoto()}>
                 <Text style={{
                     color: 'white',
                     fontWeight: 'bold',
                     fontSize: 18,
                     lineHeight: 18,
                 }}>Đăng bài</Text>
-                <ActivityIndicator style={{position: 'absolute', right: 10}} animating={isLoading} size="large" color={COLOR.icon} />
+                <ActivityIndicator style={{ position: 'absolute', right: 10 }} animating={isLoading} size="large" color={COLOR.icon} />
             </Button>
             <Incubator.Dialog
                 visible={dialogVisible}
@@ -238,20 +260,27 @@ const CreatePost = () => {
                 center
                 modalProps={modalProps}
                 headerProps={headerProps}
+                containerStyle={{width: '100%'}}
             >
                 {
                     <View style={styles.dialog}>
                         <Button size={Button.sizes.medium}
                             label="Chụp ảnh"
-                            borderRadius={0}
-                            onPress={runCamera}
-                            style={{ width: 100, height: 50, marginLeft: 10 }}
+                            borderRadius={5}
+                            onPress={() => runCamera('photo')}
+                            style={{ width: 110, height: 50, color: 'white'}}
                         />
                         <Button size={Button.sizes.medium}
-                            label="Chọn ảnh"
-                            borderRadius={0}
+                            label="Quay video"
+                            borderRadius={5}
+                            onPress={() => runCamera('video')}
+                            style={{ width: 110, height: 50, color: 'white' }}
+                        />
+                        <Button size={Button.sizes.medium}
+                            label="Chọn"
+                            borderRadius={5}
                             onPress={runImageLibrary}
-                            style={{ width: 100, height: 50 }} />
+                            style={{ width: 110, height: 50, color: 'white' }} />
 
                     </View>
                 }
@@ -290,13 +319,15 @@ const styles = StyleSheet.create({
     text: {
         paddingHorizontal: 10,
         fontSize: 20,
+        color: COLOR.text
     },
     button: {
         padding: 10
     },
     userName: {
         fontSize: 20,
-        fontWeight: '700'
+        fontWeight: '700',
+        color: COLOR.text,
     },
     dialog: {
         display: 'flex',
