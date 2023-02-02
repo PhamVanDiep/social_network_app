@@ -218,11 +218,11 @@ const CreatePost = () => {
                 <View flex row style={styles.infoBar}>
                     <View flex row>
                         <Avatar source={{
-                            uri: user.avatar,
+                            uri: user?.avatar,
                         }} size={60}></Avatar>
                         <View marginL-10>
-                            <Text style={styles.userName}>{user.username}</Text>
-                            <Text style={{color: COLOR.text}} marginL-10>Chia sẻ cảm xúc của bạn</Text>
+                            <Text style={styles.userName}>{user?.username}</Text>
+                            <Text style={{ color: COLOR.text }} marginL-10>Chia sẻ cảm xúc của bạn</Text>
                         </View>
                     </View>
                     <TouchableOpacity style={styles.iconWrap} onPress={() => setVisible(true)}>
@@ -264,7 +264,7 @@ const CreatePost = () => {
                 center
                 modalProps={modalProps}
                 headerProps={headerProps}
-                containerStyle={{width: '100%'}}
+                containerStyle={{ width: '100%' }}
             >
                 {
                     <View style={styles.dialog}>
@@ -272,7 +272,7 @@ const CreatePost = () => {
                             label="Chụp ảnh"
                             borderRadius={5}
                             onPress={() => runCamera('photo')}
-                            style={{ width: 110, height: 50, color: 'white'}}
+                            style={{ width: 110, height: 50, color: 'white' }}
                         />
                         <Button size={Button.sizes.medium}
                             label="Quay video"
