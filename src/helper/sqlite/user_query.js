@@ -13,7 +13,7 @@ ExecuteQuery = (sql, params = []) => new Promise((resolve, reject) => {
 
 export async function CreateTable() {
     let query = "CREATE TABLE IF NOT EXISTS users "
-        + "(_id VARCHAR(100) PRIMARY KEY NOT NULL, "
+        + "(_id VARCHAR(20) PRIMARY KEY NOT NULL, "
         + "phonenumber VARCHAR(20), "
         + "username VARCHAR(100), "
         + "password VARCHAR(255), "
@@ -49,6 +49,7 @@ export async function getToken() {
         const currentUser = await getFirstUsers();
         if (currentUser.length > 0) {
             const user = currentUser[0];
+            console.log(user)
 
             return user.token;
         }
@@ -61,14 +62,9 @@ export async function getToken() {
 }
 
 export async function insertUser(user) {
-    let query = "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?)";
-    try {
-        let exec = await this.ExecuteQuery(query, user);
-        return exec;
-    } catch (error) {
-        console.log(error);
-        return error;
-    }
+    let query = "INSERT INTO users (_id, phonenumber, username, password, token, last_access) VALUES (?, ?, ?, ?, ?, ?)";
+    let exec = await this.ExecuteQuery(query, user);
+    console.log(exec);
 }
 
 export async function updateUser(data) {
