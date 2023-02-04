@@ -1,3 +1,4 @@
+// export const BASE_URL = 'http://da-nen-tang-20221.vercel.app/api/v1/';
 export const BASE_URL = 'http://localhost:8000/api/v1/';
 export const FIREBASE_CONFIG = {
     AVATAR_STORAGE: 'avatar',
@@ -7,8 +8,7 @@ export const FIREBASE_CONFIG = {
 export const COLOR = {
     icon: '#789AF7',
     text: '#000000',
-    background: '#FFFFFF',
-    placeholder: '#808B96',
+    background: '#FFFFFF'
 }
 
 export const httpStatus = {
@@ -68,3 +68,7 @@ export const httpStatus = {
     NOT_EXTENDED: "510",
     NETWORK_AUTHENTICATION_REQUIRED: "511"
 };
+
+export const ChatType = {
+    PRIVATE_CHAT: 'PRIVATE_CHAT',
+}

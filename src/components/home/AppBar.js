@@ -15,7 +15,7 @@ const AppBar = () => {
 				<TouchableOpacity style={styles.action}>
 					<FontAwesomeIcon icon={faSearch} size={18} style={styles.icon} />
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.action}>
+				<TouchableOpacity style={styles.action} onPress={() => handleChat()}>
 					<FontAwesomeIcon icon={faFacebookMessenger} size={18} style={styles.icon} />
 				</TouchableOpacity>
 			</View>
