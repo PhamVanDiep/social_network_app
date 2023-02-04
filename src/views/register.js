@@ -1,191 +1,209 @@
-import React, {Component} from 'react';
-import {
-  TextInput,
-  StyleSheet,
-  ScrollView,
-  ActivityIndicator,
-  Alert,
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
 import {
   Avatar,
   Incubator,
   View,
-  RadioGroup,
-  RadioButton,
   Text,
   Checkbox,
   Colors,
   Button,
+  Icon,
 } from 'react-native-ui-lib';
 import _ from 'lodash';
-import {registerUser} from '../store/auth/authSlice';
-import {useDispatch} from 'react-redux';
-
-const {TextField} = Incubator;
+import UserService from '../helper/services/UserService';
+import { Image, SafeAreaView, ScrollView } from 'react-native';
+import Notification from '../utils/Notification';
+import MyButton from '../components/button';
+import { buttonColor } from '../constants/theme/config';
+import { COLOR } from '../constants/constants';
+const { TextField } = Incubator;
 const options = ['Nam', 'Nữ'];
+const logo = require('../../assets/image/Logo.png');
 
-class Register extends Component {
-  constructor(props) {
-    super(props);
-  }
-  
-  state = {
-    name: '',
-    gender: 'Nam',
-    phonenumber: '',
-    password: '',
-    confirm: '',
+const Register = ({ navigation }) => {
+  const [name, setName] = useState('');
+  const [phonenumber, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPass, setConfirmPass] = useState('');
+  const [confirm, setConfirm] = useState(true);
+
+  const [validName, setValidName] = useState(false);
+  const [validPhone, setValidPhone] = useState(false);
+  const [validPass, setValidPass] = useState(false);
+  const [isCheckpass, setCheckpass] = useState(false);
+
+  const [validForm, setValidForm] = useState(false);
+
+  const register = (name, phone, password) => {
+    const requestBody = {
+      username: name,
+      phonenumber: phone,
+      password: password,
+    };
+    UserService.register(requestBody)
+      .then(res => {
+        Notification.showSuccessMessage('Đăng ký thành công');
+        console.log(res.data.data);
+      })
+      .catch(err => {
+        console.log(err);
+        Notification.showErrorMessage('Đăng ký không thành công');
+      });
   };
 
-  renderRadioButton(value, text, props) {
-    return (
-      <View row marginR-10>
-        <RadioButton value={value} label={text} {...props} />
-      </View>
-    );
-  }
-
-  register(event) {
-    // event.preventDefault();
-
-    if (this.state.password !== this.state.confirm) {
-      console.log('Mật khẩu không trùng khớp');
-      return;
+  useEffect(() => {
+    if (validName && validPhone && validPass && isCheckpass && confirm) {
+      setValidForm(true);
+    } else {
+      setValidForm(false);
     }
+    // console.log("validForm", validForm);
+  }, [validName, validPhone, validPass, isCheckpass, confirm]);
 
-    const registerForm = {
-      email: this.state.email,
-      phonenumber: this.state.phonenumber,
-      password: this.state.password,
-    };
+  useEffect(() => {
+    if (confirmPass != password) {
+      setCheckpass(false);
+    } else {
+      setCheckpass(true);
+    }
+  }, [confirmPass]);
 
-    useDispatch(registerUser(registerForm));
-
-    
-  }
-
-  render() {
-    return (
-      <View centerV paddingH-20 paddingT-50>
-        <View centerH>
-          <Avatar
-            source={{
-              uri: 'https://lh3.googleusercontent.com/-cw77lUnOvmI/AAAAAAAAAAI/AAAAAAAAAAA/WMNck32dKbc/s181-c/104220521160525129167.jpg',
+  return (
+    <ScrollView>
+      <View>
+        <View style={{ width: '100%', height: 200, alignItems: 'center' }}>
+          <Image
+            source={require('../../assets/images/cover.png')}
+            resizeMode="cover"
+            style={{
+              width: '100%',
+              height: 200,
             }}
           />
-        </View>
-        <View>
-          <TextField
-            fieldStyle={{borderBottomWidth: 1, padding: 2}}
-            containerStyle={{border: 1, borderRadius: 10}}
-            placeholder="Họ tên"
-            floatingPlaceholder
-            onChangeText={value => this.setState({name: value})}
-            enableErrors
-            validate={['required', 'text']}
-            validateOnBlur
-            validationMessage={['Field is required', 'Name is invalid']}
-            maxLength={30}
+          <Avatar
+            containerStyle={{
+              position: 'absolute',
+              top: 60,
+              height: 80,
+              width: 80,
+            }}
+            source={require('../../assets/images/logo.png')}
+            size={80}
           />
         </View>
-        <View row>
-          <RadioGroup
-            row
-            initialValue={this.state.value}
-            onValueChange={value => this.setState({gender: value})}>
-            <Text text70 marginR-20 $textDefault>
-              Giới tính:
+        <View centerV paddingH-32>
+          <View>
+            <TextField
+              fieldStyle={{ borderBottomWidth: 1, padding: 2 }}
+              placeholder="Họ tên"
+              floatingPlaceholder
+              onChangeText={value => setName(value)}
+              enableErrors
+              validate={['required']}
+              validateOnBlur
+              validationMessage={['Trường bắt buộc']}
+              onChangeValidity={isValid => {
+                setValidName(isValid);
+                console.log('valid name:', isValid);
+              }}
+              maxLength={30}
+            />
+          </View>
+          <View>
+            <TextField
+              fieldStyle={{ borderBottomWidth: 1, padding: 2 }}
+              placeholder={'Số điện thoại'}
+              floatingPlaceholder
+              onChangeText={value => setPhone(value)}
+              enableErrors
+              validate={['required', 'number', value => value.length >= 9]}
+              validateOnBlur
+              validationMessage={[
+                'Trường bắt buộc',
+                'Điện thoại chỉ gồm số',
+                'Số điện thoại không hợp lệ',
+              ]}
+              onChangeValidity={isValid => {
+                setValidPhone(isValid);
+                console.log('phone', isValid);
+              }}
+              maxLength={30}
+              keyboardType="numeric"
+            />
+          </View>
+          <View>
+            <TextField
+              fieldStyle={{ borderBottomWidth: 1, padding: 2 }}
+              placeholder={'Mật khẩu'}
+              floatingPlaceholder
+              onChangeText={value => setPassword(value)}
+              enableErrors
+              validate={['required', value => value.length >= 6]}
+              validateOnBlur
+              validationMessage={['Trường bắt buộc', 'Mật khẩu quá ngắn']}
+              onChangeValidity={isValid => {
+                setValidPass(isValid);
+                console.log('pass', isValid);
+              }}
+              maxLength={30}
+              secureTextEntry={true}></TextField>
+          </View>
+
+          <View>
+            <TextField
+              fieldStyle={{ borderBottomWidth: 1, padding: 2 }}
+              placeholder={'Xác nhận mật khẩu'}
+              floatingPlaceholder
+              onChangeText={value => setConfirmPass(value)}
+              enableErrors
+              validate={['required']}
+              validateOnBlur
+              validationMessage={['Trường bắt buộc']}
+              maxLength={30}
+              secureTextEntry={true}
+            />
+            {!isCheckpass && <Text red30>Confirm password doesn't match</Text>}
+          </View>
+
+          <View row marginT-10>
+            <Text marginR-10>
+              Tôi đông ý với <Text>điều khoản sử dụng</Text>
             </Text>
-            <View row>
-              {this.renderRadioButton('Nam', 'Nam', {marginLeft: 5})}
-              {this.renderRadioButton('Nữ', 'Nữ', {marginLeft: 5})}
-              {this.renderRadioButton('Khác', 'Khác', true)}
-            </View>
-          </RadioGroup>
-        </View>
-        <View>
-          <TextField
-            fieldStyle={{borderBottomWidth: 1, padding: 2}}
-            placeholder={'Số điện thoại'}
-            floatingPlaceholder
-            onChangeText={value => this.setState({phonenumber: value})}
-            enableErrors
-            validate={['required', 'number', value => value.length >= 10]}
-            validateOnBlur
-            validationMessage={[
-              'Field is required',
-              'Only numbers are valid',
-              'Phone number is too short',
-            ]}
-            maxLength={30}
-          />
-        </View>
-        <View>
-          <TextField
-            fieldStyle={{borderBottomWidth: 1, padding: 2}}
-            placeholder={'Mật khẩu'}
-            floatingPlaceholder
-            onChangeText={value => this.setState({password: value})}
-            enableErrors
-            validate={['required', value => value.length >= 6]}
-            validateOnBlur
-            validationMessage={['Field is required', 'Password is too short']}
-            maxLength={30}
-          />
-        </View>
+            <Checkbox
+              value={confirm}
+              onValueChange={value6 => setConfirm(value6)}
+              borderRadius={5}
+              size={25}
+              color={COLOR.icon}
+            />
+          </View>
 
-        <View>
-          <TextField
-            fieldStyle={{borderBottomWidth: 1, padding: 2}}
-            placeholder={'Xác nhận mật khẩu'}
-            floatingPlaceholder
-            onChangeText={() => console.log('changed')}
-            enableErrors
-            validate={[
-              'required',
-              'text',
-              value => value.length >= 6,
-              value => value === this.state.password,
-            ]}
-            validateOnBlur
-            validationMessage={[
-              'Field is required',
-              'Email is invalid',
-              'Password is too short',
-              'Confirmation password does not match',
-            ]}
-            maxLength={30}
-          />
-        </View>
+          <View marginT-10>
+            <MyButton
+              label="Đăng ký"
+              backgroundColor={buttonColor.color1}
+              color={'white'}
+              rippleColor="#6868ff"
+              onPress={() => register(name, phonenumber, password)}
+              disabled={!validForm}
+            />
+            {/* <Button borderRadius={50} disabled={!validForm} label="Đăng ký" onPress={() => register(name, phonenumber, password)} /> */}
+          </View>
 
-        <View row marginT-10>
-          <Text marginR-10>
-            Tôi đông ý với <Text>điều khoản sử dụng</Text>
-          </Text>
-          <Checkbox
-            value={this.state.value2}
-            onValueChange={value2 => this.setState({value2})}
-            borderRadius={5}
-            size={25}
-            color={Colors.purple30}
-          />
-        </View>
-
-        <View marginT-20>
-          <Button
-            borderRadius={50}
-            label="Đăng ký"
-            onPress={this.register}
-          />
-        </View>
-
-        <View centerH row marginT-20>
-          <Text>Bạn đã có tài khoản?</Text>
-          <Button marginL-10 text80 link label="Đăng nhập"></Button>
+          <View centerH row marginT-20>
+            <Text>Bạn đã có tài khoản?</Text>
+            <Button
+              marginL-10
+              text80
+              link
+              label="Đăng nhập"
+              onPress={() => navigation.navigate('LogIn')}></Button>
+          </View>
         </View>
       </View>
-    );
-  }
-}
+
+    </ScrollView>
+  );
+};
 
 export default Register;

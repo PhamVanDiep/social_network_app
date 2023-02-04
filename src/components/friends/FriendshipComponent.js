@@ -4,11 +4,26 @@ import { useState } from "react";
 import { Tab, TabView, Text } from '@rneui/themed';
 import { View } from "react-native";
 import { COLOR } from "../../constants/constants";
+import { useSelector } from 'react-redux'
+import { selectAuth } from '../../store/auth/authSlice'
+import Notification from "../../utils/Notification";
 
-const FriendshipComponent = () => {
+const FriendshipComponent = ({ navigation }) => {
 
     const [index, setIndex] = useState(0);
+    const { user } = useSelector(selectAuth);
+    const [blocks, setBlockes] = useState([]);
 
+    handleAvatarPress = (block_diary) => {
+        setBlockes(block_diary);
+        if (blocks.includes(user._id)) {
+            Notification.showWarningMessage('Thông báo', 'Không thể xem thông tin của người này.');
+        } else {
+            navigation.navigate('PersonalProfileScreen');
+        }
+        setBlockes([]);
+    }
+    
     return (
         <View style={{ width: '100%', height: '100%' }}>
             <Tab
@@ -19,11 +34,19 @@ const FriendshipComponent = () => {
             >
                 <Tab.Item
                     title="Lời mời kết bạn"
-                    titleStyle={{ fontSize: 18, color: COLOR.text }}
+                    titleStyle={(active) => ({
+                        color: active ? COLOR.icon : COLOR.text,
+                        fontSize: 18,
+                        fontFamily: 'Roboto'
+                    })}
                 />
                 <Tab.Item
                     title="Bạn bè"
-                    titleStyle={{ fontSize: 18, color: COLOR.text }}
+                    titleStyle={(active) => ({
+                        color: active ? COLOR.icon : COLOR.text,
+                        fontSize: 18,
+                        fontFamily: 'Roboto'
+                    })}
                 />
             </Tab>
 
