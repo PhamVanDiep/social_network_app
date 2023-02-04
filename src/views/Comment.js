@@ -202,6 +202,7 @@ const Comment = ({ route, navigation }) => {
                         placeholderTextColor={COLOR.placeholder}
                         style={styles.textInput}
                         value={comment}
+                        maxLength={500}
                         onChangeText={(value) => setComment(value)}
                     />
                 </TouchableWithoutFeedback>

@@ -25,7 +25,7 @@ import Message from '../views/Chat/Message';
 import SingleChat from '../components/chat/SingleChat';
 import { TouchableOpacity } from 'react-native-ui-lib';
 import NewConversation from '../views/Chat/NewConversation';
-import Homepage from '../views/HomePage';
+import Homepage from '../views/Homepage';
 import { UploadImage } from '../test/upload';
 
 const Stack = createNativeStackNavigator();

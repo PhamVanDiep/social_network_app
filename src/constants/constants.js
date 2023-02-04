@@ -1,4 +1,5 @@
-export const BASE_URL = 'http://da-nen-tang-20221.vercel.app/api/v1/';
+// export const BASE_URL = 'http://da-nen-tang-20221.vercel.app/api/v1/';
+export const BASE_URL = 'http://localhost:8000/api/v1/';
 export const FIREBASE_CONFIG = {
     AVATAR_STORAGE: 'avatar',
     COVER_IMAGE_STORAGE: 'cover_image',

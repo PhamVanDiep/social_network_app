@@ -83,6 +83,10 @@ const HomePageComponent = ({ navigation }) => {
         })
     }
 
+    handleChat = () => {
+        navigation.navigate('Chat');
+    }
+
     showReportDialog = (id) => {
         setReportDialogVisible(!reportDialogVisible);
         setPostId(id);
