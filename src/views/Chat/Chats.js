@@ -35,7 +35,7 @@ const Chats = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity style={styles.iconWrap} onPress={() => navigation.navigate('TopTop')}>
+                <TouchableOpacity style={styles.iconWrap} onPress={() => navigation.navigate('HomePage')}>
                     <FontAwesomeIcon size={24} icon={faHouse} color={COLOR.background} />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>Tin nhắn</Text>
