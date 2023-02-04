@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
-import { Avatar, Incubator, View, Button, PanningProvider, ModalProps } from 'react-native-ui-lib';
+import { Avatar, Incubator, View, Button, PanningProvider, ModalProps, Icon } from 'react-native-ui-lib';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { uploadImageToFirebase } from '../utils/upload_image';
 import { COLOR, FIREBASE_CONFIG } from '../constants/constants';
 import PostService from '../helper/services/PostService';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faImage } from "@fortawesome/free-regular-svg-icons";
+import { faImage, faArrowAltCircleLeft } from "@fortawesome/free-regular-svg-icons";
 import ListImageComponent from '../components/ListImageComponent';
 import Video from 'react-native-video';
 import Notification from '../utils/Notification';
@@ -16,7 +16,7 @@ import { useSelector } from 'react-redux';
 
 
 const { TextField } = Incubator;
-const CreatePost = () => {
+const CreatePost = ({ navigation }) => {
     // const [user, setUser] = useState({});
     const [isVideo, setVideo] = useState(false);
     const [asset, setAsset] = useState([]);
@@ -207,6 +207,7 @@ const CreatePost = () => {
             }
             // console.log(images);
             // console.log(imageURI);
+            navigation.navigate('PersonalProfileScreen');
             Notification.showSuccessMessage('Tạo bài viết thành công');
         }
         setLoading(false);
@@ -214,6 +215,12 @@ const CreatePost = () => {
 
     return (
         <SafeAreaView style={styles.container}>
+            <View style={styles.header}>
+                <TouchableOpacity style={styles.iconWrap} onPress={() => navigation.navigate('PersonalProfileScreen')}>
+                    <Icon source={require('../assets/icons/arrow_left.png')} size={24}></Icon>
+                </TouchableOpacity>
+                <Text style={styles.headerTitle}>Tạo bài viết</Text>
+            </View>
             <ScrollView style={styles.scrollView}>
                 <View flex row style={styles.infoBar}>
                     <View flex row>
@@ -301,6 +308,22 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignContent: 'center',
         color: COLOR.background,
+        backgroundColor: '#fff'
+    },
+    header: {
+        padding: 10,
+        borderBottomWidth: 2,
+        borderBottomColor: '#E5E8E8',
+        display: 'flex',
+        flexDirection: 'row',
+        // justifyContent: 'space-between'
+    },
+    headerTitle: {
+        fontFamily: 'Roboto',
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: COLOR.text,
+        marginLeft: 20
     },
     scrollView: {
 
