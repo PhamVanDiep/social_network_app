@@ -80,6 +80,22 @@ const TmpScreen = ({ navigation }) => {
         }}>
         <Text style={styles.text}>Upload Image Test</Text>
       </TouchableHighlight>
+
+      <TouchableHighlight
+        style={styles.button}
+        onPress={() => {
+          navigation.navigate('Settings');
+        }}>
+        <Text style={styles.text}>Settings</Text>
+      </TouchableHighlight>
+
+      <TouchableHighlight
+        style={styles.button}
+        onPress={() => {
+          navigation.navigate('Chat');
+        }}>
+        <Text style={styles.text}>Chat</Text>
+      </TouchableHighlight>
       <TouchableHighlight
         style={styles.alertButton}
         onPress={() => {

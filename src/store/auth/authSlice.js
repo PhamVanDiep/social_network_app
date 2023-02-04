@@ -50,7 +50,7 @@ export const loginUser = createAsyncThunk('auth/login', async (loginForm) => {
       setAuthToken(token);
       let res = await insertUser([_id, phonenumber, username, loginForm.password, response.data.token, moment().valueOf().toString()]);
       if (res.code != 0) {
-        return { success: true, user: response.data.data } 
+        return { success: true, user: response.data.data }
       } else {
         return { success: false, message: 'Đã xảy ra lỗi khi lưu thông tin đăng nhập' }
       }

@@ -32,3 +32,9 @@ export const FRIEND_API = {
     remove: 'friends/set-remove',
     getFriends: 'friends/list'
 }
+
+export const CHAT_API = {
+    sendMessage: 'chats/send',
+    getSingleChat: 'chats/getMessages',
+    getAllChats: 'chats',
+}
