@@ -1,11 +1,12 @@
 import React from 'react'
 import { BackHandler, View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { faPowerOff, faSignOut } from '@fortawesome/free-solid-svg-icons';
+import { faPowerOff, faSignOut, faKey } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { COLOR } from '../constants/constants';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser, selectAuth } from '../store/auth/authSlice';
 import { Avatar } from 'react-native-ui-lib';
+import UserService from '../helper/services/UserService';
 
 const styles = StyleSheet.create({
     container: {
@@ -85,10 +86,26 @@ const Settings = ({ navigation }) => {
                 text: 'Có',
                 onPress: () => {
                     dispatch(logoutUser());
-                    navigation.navigate('LogIn');
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'LogIn' }],
+                    });
                 }
             },
         ]);
+    }
+
+    const changePassword = () => {
+        UserService.changePassword({
+            currentPassword: "abc123",
+            newPassword: "abc123"
+        })
+            .then(res => {
+                console.log(res.data.data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
     }
 
     return (
@@ -104,7 +121,7 @@ const Settings = ({ navigation }) => {
                         </Text>
                     </View>
                 </View>
-                <TouchableOpacity onPress={() => navigation.navigate('PersonalProfileScreen')}>
+                <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen', { userId: user?._id })}>
                     <View style={styles.userContainer}>
                         <Avatar source={{ uri: user?.avatar }} size={64} />
                         <View style={styles.textContainer}>
@@ -128,6 +145,10 @@ const Settings = ({ navigation }) => {
                 <TouchableOpacity style={styles.exitContainer} onPress={() => BackHandler.exitApp()}>
                     <FontAwesomeIcon icon={faPowerOff} size={24} />
                     <Text style={{ fontSize: 18, fontWeight: '500', color: COLOR.text, marginLeft: 10 }}>Thoát ứng dụng</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.exitContainer} onPress={changePassword}>
+                    <FontAwesomeIcon icon={faKey} size={24} />
+                    <Text style={{ fontSize: 18, fontWeight: '500', color: COLOR.text, marginLeft: 10 }}>Đổi mật khẩu</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.logoutContainer} onPress={logoutAction}>
                     <FontAwesomeIcon icon={faSignOut} size={24} />

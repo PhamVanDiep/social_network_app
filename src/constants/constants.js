@@ -8,7 +8,9 @@ export const FIREBASE_CONFIG = {
 export const COLOR = {
     icon: '#789AF7',
     text: '#000000',
-    background: '#FFFFFF'
+    background: '#FFFFFF',
+    placeholder: '#808B96',
+    lockIcon: '#000000',
 }
 
 export const httpStatus = {

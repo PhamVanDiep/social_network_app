@@ -110,6 +110,14 @@ const ListFriendComponent = () => {
             .then(res => {
                 setProfile(res.data.data);
                 setBlockDiary(res.data.data.blocked_diary);
+                let temp = [];
+                tmp.forEach(element => {
+                    if (element._id != selectedFriend) {
+                        temp.push(element);
+                    }
+                });
+                setFriends(temp);
+                setTmp(temp);
                 Notification.showSuccessMessage(body.type ? 'Đã chặn người dùng xem nhật ký' : 'Đã bỏ chặn người dùng thành công');
             })
             .catch(err => {

@@ -1,71 +1,98 @@
 import {
-  View,
-  Text,
-  StyleSheet,
-  Button,
-  TouchableOpacity,
-  TouchableHighlight,
+  Dimensions,
   Image,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import React from 'react';
-import {Dimensions} from 'react-native';
-import defaultAvatar from '../../../assets/images/default-avatar-profile.jpg';
 import {Drawer} from 'react-native-ui-lib';
-
-const FriendList = ({data}) => {
+const FriendList = ({navigation, data, hide}) => {
   const windowWidth = Dimensions.get('window').width;
   return (
-    <View style={styles.container}>
-      <View style={styles.top}>
-        <View style={styles.topLeft}>
-          <Text
-            style={{
-              color: 'black',
-              fontWeight: 'bold',
-              fontSize: 20,
-            }}>
-            Friends
-          </Text>
-          <Text
-            style={{
-              color: '#6e6e6e',
-              fontSize: 18,
-            }}>
-            {data?.length ? data.length : 0} friends
-          </Text>
-        </View>
-        <View style={styles.topRight}>
-          <TouchableOpacity style={styles.seeAllFriends}>
+    <>
+      <View style={styles.container}>
+        <View style={styles.top}>
+          <View style={styles.topLeft}>
             <Text
               style={{
-                textAlign: 'right',
-                color: 'blue',
-                fontSize: 18,
+                color: 'black',
+                fontWeight: 'bold',
+                fontSize: 20,
               }}>
-              See all friends
+              Bạn bè
             </Text>
-          </TouchableOpacity>
+            {!hide && (
+              <Text
+                style={{
+                  color: '#6e6e6e',
+                  fontSize: 18,
+                }}>
+                {data?.length ? data.length : 0} bạn bè
+              </Text>
+            )}
+          </View>
+          {!hide && (
+            <View style={styles.topRight}>
+              <TouchableOpacity
+                style={styles.seeAllFriends}
+                onPress={() => {
+                  navigation.navigate('FriendListScreen');
+                }}>
+                <Text
+                  style={{
+                    textAlign: 'right',
+                    color: 'blue',
+                    fontSize: 18,
+                  }}>
+                  Xem tất cả bạn bè
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
+        {!hide ? (
+          <View style={styles.gridList}>
+            {data?.map((friend, index) => {
+              let d = (windowWidth - 32 - 16) / 3;
+              if (index < 6)
+                return (
+                  <TouchableHighlight
+                    underlayColor={'transparent'}
+                    style={[
+                      styles.friend,
+                      {
+                        width: d,
+                        marginHorizontal: (index + 1) % 3 == 2 ? 8 : 0,
+                      },
+                    ]}
+                    key={index}
+                    onPress={() => {
+                      navigation.navigate('AnotherProfileScreen', {
+                        userId: friend._id,
+                      });
+                    }}>
+                    <View>
+                      <Image
+                        style={[
+                          styles.avaterImage,
+                          {width: d, height: d, backgroundColor: '#e0e0e0'},
+                        ]}
+                        source={{uri: friend.avatar}}
+                      />
+                      <Text style={styles.friendName}>{friend.username}</Text>
+                    </View>
+                  </TouchableHighlight>
+                );
+            })}
+          </View>
+        ) : (
+          <Text>Không công khai</Text>
+        )}
+        <Drawer />
       </View>
-      <View style={styles.gridList}>
-        {data?.map((friend, index) => {
-          let d = (windowWidth - 32 - 16) / 3;
-          if (index < 6)
-            return (
-              <View style={[styles.friend, {width: d}]} key={index}>
-                <TouchableHighlight>
-                  <Image
-                    style={[styles.avaterImage, {width: d, height: d}]}
-                    source={friend.avatar ? friend.avatar : defaultAvatar}
-                  />
-                </TouchableHighlight>
-                <Text style={styles.friendName}>{friend.name}</Text>
-              </View>
-            );
-        })}
-      </View>
-      <Drawer />
-    </View>
+    </>
   );
 };
 
@@ -88,7 +115,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
   },
   avaterImage: {
     resizeMode: 'contain',

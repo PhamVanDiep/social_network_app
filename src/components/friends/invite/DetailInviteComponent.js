@@ -73,9 +73,9 @@ const DetailInviteComponent = ({senderId}) => {
 
     return(
         <View style={styles.container}>
-            <Avatar source={{ uri: sender.avatar }} size={80} onPress={() => handleAvatarPress(sender.block_diary) }></Avatar>
+            <Avatar source={{ uri: sender.avatar }} size={80} onPress={() => handleAvatarPress(sender.block_diary, sender._id) }></Avatar>
             <View style={styles.rightPane}>
-                <TouchableOpacity onPress={() => handleAvatarPress(sender.block_diary) }>
+                <TouchableOpacity onPress={() => handleAvatarPress(sender.block_diary, sender._id) }>
                     <Text style={styles.userName}>{ sender.username }</Text>
                 </TouchableOpacity>
                 <View style={styles.btnWrapper}>

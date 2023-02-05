@@ -60,9 +60,9 @@ const FriendComponent = ({friendId, isBlocked}) => {
 
     return(
         <View style={styles.container}>
-            <Avatar source={{ uri: friend.avatar }} size={80} onPress={() => handleAvatarPress(friend.block_diary) }></Avatar>
+            <Avatar source={{ uri: friend.avatar }} size={80} onPress={() => handleAvatarPress(friend.block_diary, friend._id) }></Avatar>
             <View style={styles.textContainer}>
-                <TouchableOpacity onPress={() => handleAvatarPress(friend.block_diary) }>
+                <TouchableOpacity onPress={() => handleAvatarPress(friend.block_diary, friend._id) }>
                     <Text style={styles.userName}>{ friend.username }</Text>
                 </TouchableOpacity>
                 <Text style={isBlocked? styles.blockedStatus : styles.activeStatus}>{ isBlocked? 'Blocked' : 'Active' }</Text>

@@ -26,7 +26,10 @@ const Init = ({ navigation }) => {
         });
         // navigation.navigate('HomePage');
       } else {
-        navigation.navigate('LogIn');
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'LogIn' }],
+        });
       }
     };
     fetchData();

@@ -197,7 +197,12 @@ const Register = ({ navigation }) => {
               text80
               link
               label="Đăng nhập"
-              onPress={() => navigation.navigate('LogIn')}></Button>
+              onPress={() => {
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'LogIn' }],
+                });
+              }}></Button>
           </View>
         </View>
       </View>

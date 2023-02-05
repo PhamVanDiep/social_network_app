@@ -14,12 +14,12 @@ const FriendshipComponent = ({ navigation }) => {
     const { user } = useSelector(selectAuth);
     const [blocks, setBlockes] = useState([]);
 
-    handleAvatarPress = (block_diary) => {
+    handleAvatarPress = (block_diary, id) => {
         setBlockes(block_diary);
         if (blocks.includes(user._id)) {
             Notification.showWarningMessage('Thông báo', 'Không thể xem thông tin của người này.');
         } else {
-            navigation.navigate('PersonalProfileScreen');
+            navigation.navigate('ProfileScreen', { userId: id });
         }
         setBlockes([]);
     }
