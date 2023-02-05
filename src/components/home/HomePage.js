@@ -63,8 +63,8 @@ const HomePageComponent = ({ navigation }) => {
         loadData(0, 10);
     }
 
-    handleAvatarPress = () => {
-        navigation.navigate('PersonalProfileScreen')
+    handleAvatarPress = (id) => {
+        navigation.navigate('ProfileScreen', { userId: id });
     }
 
     handleFocus = () => {

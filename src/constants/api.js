@@ -30,7 +30,9 @@ export const FRIEND_API = {
     getRequests: 'friends/get-requested-friend',
     action: 'friends/set-accept',
     remove: 'friends/set-remove',
-    getFriends: 'friends/list'
+    getFriends: 'friends/list',
+    getStatus: 'friends/status',
+    cancelSendRequest: 'friends/cancel-send-request'
 }
 
 export const CHAT_API = {

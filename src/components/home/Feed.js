@@ -163,9 +163,9 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
       <View style={styles.Container}>
         <View style={styles.Header}>
           <View style={styles.Row}>
-            <Avatar source={{ uri: author.avatar }} size={36} onPress={() => handleAvatarPress()} />
+            <Avatar source={{ uri: author.avatar }} size={36} onPress={() => handleAvatarPress(author._id)} />
             <View style={{ paddingLeft: 10 }}>
-              <TouchableOpacity onPress={() => handleAvatarPress()}>
+              <TouchableOpacity onPress={() => handleAvatarPress(author._id)}>
                 <Text style={styles.User}>{author.username}</Text>
               </TouchableOpacity>
               <View style={styles.Row}>
@@ -195,7 +195,7 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
         {
           described.length > 36 && !isSeeMore ?
             <View>
-              <TouchableOpacity onPress={() => handlePostDetail(id)}>
+              <TouchableOpacity onPress={(e) => (images?.length <= 1 || videos?.length == 1) ? e.preventDefault() :  handlePostDetail(id)}>
                 <Text numberOfLines={1} style={styles.Post}>
                   {described}
                 </Text>
@@ -205,7 +205,7 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
               </TouchableOpacity>
             </View>
             :
-            <TouchableOpacity onPress={() => handlePostDetail(id)}>
+            <TouchableOpacity onPress={(e) => (images?.length <= 1 || videos?.length == 1) ? e.preventDefault() :  handlePostDetail(id)}>
               <Text style={styles.Post}>
                 {described}
               </Text>

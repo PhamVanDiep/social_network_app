@@ -22,8 +22,8 @@ class UserService {
     return http.post(`${USER_API.login}`, body);
   }
 
-  edit(id, body) {
-    return http.post(`${USER_API.editProfile}/${id}`, body);
+  edit(body) {
+    return http.post(`${USER_API.editProfile}`, body);
   }
 
   changePassword(body) {
