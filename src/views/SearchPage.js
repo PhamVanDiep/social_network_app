@@ -11,7 +11,7 @@ import {
 import {SceneMap, TabView, ViewPagerBackend} from 'react-native-tab-view';
 
 import HeaderSearch from '../components/header-search/HeaderSearch';
-import Feed from '../components/khang_components/Feed';
+import Feed from '../components/home/Feed';
 import PostService from '../helper/services/PostService';
 import UserService from '../helper/services/UserService';
 import Notification from '../utils/Notification';
