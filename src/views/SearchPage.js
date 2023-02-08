@@ -1,78 +1,71 @@
-import {useEffect, useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
-  ScrollView,
+  Animated,
   StatusBar,
+  ScrollView,
+  View,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  Button,
 } from 'react-native';
-import {SceneMap, TabView, ViewPagerBackend} from 'react-native-tab-view';
+import {TabView, SceneMap, ViewPagerBackend} from 'react-native-tab-view';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {Avatar} from 'react-native-ui-lib';
 
-import HeaderSearch from '../components/header-search/HeaderSearch';
 import Feed from '../components/home/Feed';
+import HeaderSearch from '../components/header-search/HeaderSearch';
+import Notification from '../utils/Notification';
 import PostService from '../helper/services/PostService';
 import UserService from '../helper/services/UserService';
-import Notification from '../utils/Notification';
-
-import {faBars} from '@fortawesome/free-solid-svg-icons/faBars';
-import {faBell} from '@fortawesome/free-solid-svg-icons/faBell';
-import {faClapperboard} from '@fortawesome/free-solid-svg-icons/faClapperboard';
-import {faHouse} from '@fortawesome/free-solid-svg-icons/faHouse';
-import {faUserGroup} from '@fortawesome/free-solid-svg-icons/faUserGroup';
-import {COLOR} from '../constants/constants';
+import FriendService from '../helper/services/FriendService';
+import { Alert } from 'react-native';
+import ButtonFunction from '../components/personal-profile/button-function';
 
 const styles = {
   Container: {
     flex: 1,
   },
-  NavBar: {
-    width: '100%',
-    height: 48,
-    backgroundColor: COLOR.mainWhite,
-    display: 'flex',
+  tabBar: {
     flexDirection: 'row',
-    alignItems: 'center',
+    paddingTop: StatusBar.currentHeight,
   },
-  NavbarItem: {
-    height: '100%',
+  tabItem: {
     flex: 1,
-    display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    padding: 5,
   },
-  NavbarItemActive: {
-    height: '100%',
-    flex: 1,
-    display: 'flex',
+  tabInnerText: {
+    color: '#7E41BB',
+  },
+  Row: {
     alignItems: 'center',
-    justifyContent: 'center',
-    color: COLOR.mainBlue,
-    borderTopWidth: 2,
-    borderTopColor: COLOR.mainBlue,
+    flexDirection: 'row',
+    margin: 10,
   },
-  NavbarItemText: {
-    color: '#333',
+  User: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#222121',
+    marginRight: 3,
+  },
+  Address: {
     fontSize: 10,
+    color: '#747476',
+    marginRight: 4,
   },
-  NoActiveNavbarIcon: {
-    color: '#ccc',
-    border: 1,
-    // borderColor: '#333',
-    // borderStyle: 'solid',
+  BtnFn: {
+    paddingLeft: 40,
+    justifyContent: 'center',
+    marginHorizontal: 16,
+    borderWidth: 1,
+    borderRadius: 10,
   },
 };
 
-const SearchPage = () => {
+const SearchPage = ({navigation}) => {
   const [searchPageType, setSearchPageType] = useState('post');
-  const navbarItems = [
-    {icon: faHouse, text: 'Home'},
-    {icon: faUserGroup, text: 'Friends'},
-    {icon: faClapperboard, text: 'Watch'},
-    {icon: faBell, text: 'Notifications'},
-    {icon: faBars, text: 'Menu'},
-  ];
   const [keyword, setKeyword] = useState('');
   const [navbarItemActiveIndex, setNavbarItemActiveIndex] = useState(0);
   const sortFnc = (a, b) => (b.createdAt > a.createdAt ? 1 : -1);
@@ -153,27 +146,97 @@ const SearchPage = () => {
           ))}
       </ScrollView>
     );
-    // console.log(1)
   };
 
-  const User = props => {
-    <>Đây là người dùng</>;
+  const handleAvatarPress = id => {
+    navigation.navigate('ProfileScreen', {userId: id});
+  };
+
+  const User = ({id, username, address, avatar}) => {
+    const [friendStatus, setFriendStatus] = useState('-1');
+    try {
+      FriendService.status(id).then(res => {
+        setFriendStatus(res.data.data);
+        console.log('Friend Status: ' + friendStatus);
+      });
+    } catch (e) {
+      console.log(e);
+    }
+
+    let title;
+    let btnFn = () => null;
+    let isDisable = false;
+    if (friendStatus.toString() === '-1') {
+      title = 'Gửi lời mời kết bạn';
+      btnFn = () => {
+        FriendService.sendRequest({user_id: id})
+          .then(res => {
+            Alert.alert(res.data.message);
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      };
+    } else if (friendStatus.toString() === '0') {
+      title = 'Hủy lời mời kết bạn';
+      btnFn = () => {
+        FriendService.cancelSendRequest({user_id: id})
+          .then(res => {
+            Alert.alert(res.data.message);
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      };
+    } else {
+      title = 'Xem trang cá nhân';
+      btn = () => handleAvatarPress(id);
+    }
+
+    return (
+      <View style={{marginTop: 10}}>
+        <View style={styles.Row}>
+          <Avatar
+            source={{uri: avatar}}
+            size={36}
+            onPress={() => handleAvatarPress(id)}
+          />
+          <View style={{paddingLeft: 10}}>
+            <TouchableOpacity onPress={() => handleAvatarPress(id)}>
+              <Text style={styles.User}>{username}</Text>
+            </TouchableOpacity>
+            <Text style={styles.Address}>
+              {address ? `Sống tại ${address}` : null}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.BtnFn}>
+          <Button title={title} onPress={btnFn} disabled={isDisable} />
+        </View>
+      </View>
+    );
   };
 
   const UserList = () => {
+    console.log(searchUsers);
     return (
       <ScrollView>
         {searchUsers.sort(sortFnc).length > 0 &&
           searchUsers.map(item => (
             <View key={item._id}>
-              <User id={item._id} />
+              <User
+                id={item._id}
+                username={item.username}
+                address={item.address ? item.address : null}
+                avatar={item.avatar}
+              />
             </View>
           ))}
       </ScrollView>
     );
   };
 
-  const [navigation, setNavigation] = useState({
+  const [navigationState, setNavigationState] = useState({
     index: 0,
     routes: [
       {
@@ -192,56 +255,51 @@ const SearchPage = () => {
     user: UserList,
   });
 
+  // _renderTabbar = (props) => {
+  //     const inputRange = props.navigationState.routes.map((x, i) => i);
+  //     return (
+  //         <View style={styles.tabBar}>
+  //             {props.navigationState.routes.map((route, i) => {
+  //             const opacity = props.position.interpolate({
+  //                 inputRange,
+  //                 outputRange: inputRange.map((inputIndex) =>
+  //                 inputIndex === i ? 1 : 0.5
+  //                 ),
+  //             });
+
+  //             return (
+  //                 <TouchableOpacity
+  //                 style={styles.tabItem}
+  //                 onPress={() => this.setState({ index: i })}>
+  //                 <Animated.Text style={{ opacity, color: '#7E41BB' }}>{route.title}</Animated.Text>
+  //                 </TouchableOpacity>
+  //             );
+  //             })}
+  //         </View>
+  //     );
+  // }
+
   return (
     <>
-      <StatusBar backgroundColor={COLOR.background} barStyle="dark-content" />
+      <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
       <HeaderSearch
+        navigation={navigation}
         setSearchKeyword={setKeyword}
         actionFn={() => searchFuntion(keyword)}
       />
       <View style={styles.Container}>
         <TabView
-          navigationState={navigation}
+          navigationState={navigationState}
           renderScene={renderScene}
           onIndexChange={index => {
-            setNavigation({...navigation, index: index});
-            setSearchPageType(navigation.routes[index].key);
+            setNavigationState({...navigationState, index: index});
+            setSearchPageType(navigationState.routes[index].key);
           }}
+          // renderTabBar={this._renderTabbar}
           renderPager={props => (
             <ViewPagerBackend {...props} transitionStyle="curl" />
           )}
         />
-        <View style={styles.NavBar}>
-          {navbarItems.map((item, index) => {
-            return index === navbarItemActiveIndex ? (
-              <TouchableOpacity key={index} style={styles.NavbarItemActive}>
-                <FontAwesomeIcon
-                  icon={item.icon}
-                  size={24}
-                  color={COLOR.mainBlue}
-                />
-                <Text style={[styles.NavbarItemText, {color: COLOR.mainBlue}]}>
-                  {item.text}
-                </Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={e => {
-                  e.preventDefault();
-                  setNavbarItemActiveIndex(index);
-                }}
-                key={index}
-                style={styles.NavbarItem}>
-                <FontAwesomeIcon
-                  style={styles.NoActiveNavbarIcon}
-                  icon={item.icon}
-                  size={24}
-                />
-                <Text style={[styles.NavbarItemText]}>{item.text}</Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
       </View>
     </>
   );
