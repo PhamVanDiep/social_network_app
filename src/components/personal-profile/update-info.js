@@ -5,9 +5,9 @@ import {
   Image,
   StyleSheet,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import React, {memo, useEffect, useState} from 'react';
-import {app_color} from '../../constants/theme/config';
 import {ScrollView} from 'react-native-gesture-handler';
 import InfoView from './personal-info';
 import {
@@ -25,6 +25,7 @@ import {faUser} from '@fortawesome/free-solid-svg-icons/faUser';
 import {faCalendarDay} from '@fortawesome/free-solid-svg-icons/faCalendarDay';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import UploadImageProfile from './upload-image-component';
+import {COLOR} from '../../constants/constants';
 const UpdateInfoComponent = ({userId}) => {
   const [somethingChanged, callback] = useState(false);
   const [userInfo, setUserInfo] = useState({});
@@ -45,7 +46,11 @@ const UpdateInfoComponent = ({userId}) => {
   // console.log('update', userInfo);
   return (
     <ScrollView
-      style={{backgroundColor: 'white', flex: 1, paddingHorizontal: 16}}>
+      style={{
+        backgroundColor: COLOR.background,
+        flex: 1,
+        paddingHorizontal: 16,
+      }}>
       <View>
         <ProfileItemComponent
           type={1}
@@ -102,7 +107,7 @@ const ProfileItemComponent = ({type, userInfo, callback}) => {
         style={{
           paddingVertical: 16,
           alignItems: 'center',
-          borderBottomColor: '#e0e0e0',
+          borderBottomColor: COLOR.mainGraySmoke,
           borderBottomWidth: 0.5,
         }}>
         <View
@@ -112,7 +117,8 @@ const ProfileItemComponent = ({type, userInfo, callback}) => {
             justifyContent: 'space-between',
             width: '100%',
           }}>
-          <Text style={{fontSize: 18, fontWeight: 'bold', color: '#212121'}}>
+          <Text
+            style={{fontSize: 18, fontWeight: 'bold', color: COLOR.mainBlack}}>
             {type == 1
               ? 'Ảnh đại diện'
               : type == 2
@@ -126,7 +132,7 @@ const ProfileItemComponent = ({type, userInfo, callback}) => {
             onPress={() => {
               setOpen(true);
             }}>
-            <Text style={{fontSize: 18, color: app_color.color1}}>Sửa</Text>
+            <Text style={{fontSize: 18, color: COLOR.mainBlue}}>Sửa</Text>
           </TouchableHighlight>
         </View>
         {(type == 1 || type == 2) && (
@@ -141,13 +147,12 @@ const ProfileItemComponent = ({type, userInfo, callback}) => {
                 uri: type == 1 ? userInfo.avatar : userInfo.cover_image,
               }}
               style={{
-                resizeMode: 'contain',
+                resizeMode: 'cover',
                 width: type == 1 ? 128 : '100%',
                 height: type == 1 ? 128 : 196,
-                backgroundColor: '#c0c0c0',
+                backgroundColor: COLOR.mainGray,
                 borderRadius: type == 1 ? 128 : 8,
               }}
-              resizeMode={'contain'}
             />
           </TouchableHighlight>
         )}
@@ -172,7 +177,7 @@ const ProfileItemComponent = ({type, userInfo, callback}) => {
                   marginLeft: 8,
                   fontSize: 16,
                   fontWeight: '500',
-                  color: '#212121',
+                  color: COLOR.mainBlack,
                 }}>
                 {'Họ tên: '}
               </Text>
@@ -181,7 +186,7 @@ const ProfileItemComponent = ({type, userInfo, callback}) => {
                   marginLeft: 8,
                   fontSize: 18,
                   fontWeight: '600',
-                  color: '#212121',
+                  color: COLOR.mainBlack,
                 }}>
                 {userInfo.username}
               </Text>
@@ -256,6 +261,7 @@ const ProfileItemComponent = ({type, userInfo, callback}) => {
 
 const DialogBioView = memo(({userInfo, open, setOpen, saveAction}) => {
   const [text, setText] = useState('');
+  // const [loading, setLoading] = useState(false);
   //   console.log(userInfo);
   useEffect(() => {
     setText(userInfo?.description);
@@ -276,7 +282,7 @@ const DialogBioView = memo(({userInfo, open, setOpen, saveAction}) => {
         style={{
           width: '100%',
           height: '100%',
-          backgroundColor: 'white',
+          backgroundColor: COLOR.background,
           display: 'flex',
         }}>
         <View
@@ -284,7 +290,7 @@ const DialogBioView = memo(({userInfo, open, setOpen, saveAction}) => {
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
-            borderBottomColor: '#e0e0e0',
+            borderBottomColor: COLOR.mainGraySmoke,
             borderBottomWidth: 0.5,
             padding: 16,
             paddingBottom: 24,
@@ -301,13 +307,23 @@ const DialogBioView = memo(({userInfo, open, setOpen, saveAction}) => {
             onPress={() => {
               saveAction({description: text});
             }}>
-            <Text style={styles.buttonText}>Lưu</Text>
+            <>
+              {/* {loading && (
+                <ActivityIndicator
+                  style={{position: 'absolute', right: 32, top: 2}}
+                  animating={loading}
+                  size="small"
+                  color={COLOR.mainBlack}
+                />
+              )} */}
+              <Text style={styles.buttonText}>Lưu</Text>
+            </>
           </TouchableHighlight>
         </View>
         <View
           style={{
             paddingHorizontal: 12,
-            borderBottomColor: '#e0e0e0',
+            borderBottomColor: COLOR.mainGraySmoke,
             borderBottomWidth: 0.5,
             paddingBottom: 12,
           }}>
@@ -334,21 +350,10 @@ const DialogBioView = memo(({userInfo, open, setOpen, saveAction}) => {
 
 const DialogDetailView = memo(({userInfo, open, setOpen, saveAction}) => {
   //   console.log(userInfo);
-  //   const [username, setName] = useState(
-  //     userInfo?.username ? userInfo?.username : '',
-  //   );
+  // const [loading, setLoading] = useState(false);
   const [birthday, setBirthday] = useState(
     userInfo?.birthday ? userInfo?.birthday.substring(0, 10) : '',
   );
-  //   const [address, setAddress] = useState(
-  //     userInfo?.address ? userInfo?.address : '',
-  //   );
-  //   const [city, setCity] = useState(userInfo?.city ? userInfo?.city : '');
-  //   const [gender, setGender] = useState(
-  //     userInfo?.gender && ['Nam', 'Nữ'].includes(userInfo?.gender)
-  //       ? userInfo?.gender
-  //       : 'Nam',
-  //   );
   const [value, setValue] = useState({});
   useEffect(() => {
     setValue({
@@ -379,7 +384,7 @@ const DialogDetailView = memo(({userInfo, open, setOpen, saveAction}) => {
           style={{
             width: '100%',
             height: '100%',
-            backgroundColor: 'white',
+            backgroundColor: COLOR.background,
             display: 'flex',
           }}>
           <View
@@ -387,7 +392,7 @@ const DialogDetailView = memo(({userInfo, open, setOpen, saveAction}) => {
               display: 'flex',
               flexDirection: 'row',
               justifyContent: 'space-between',
-              borderBottomColor: '#e0e0e0',
+              borderBottomColor: COLOR.mainGraySmoke,
               borderBottomWidth: 0.5,
               padding: 16,
               paddingBottom: 24,
@@ -404,7 +409,17 @@ const DialogDetailView = memo(({userInfo, open, setOpen, saveAction}) => {
               onPress={() => {
                 saveAction(value);
               }}>
-              <Text style={styles.buttonText}>Lưu</Text>
+              <>
+                {/* {loading && (
+                  <ActivityIndicator
+                    style={{position: 'absolute', right: 32, top: 2}}
+                    animating={loading}
+                    size="small"
+                    color={COLOR.mainBlack}
+                  />
+                )} */}
+                <Text style={styles.buttonText}>Lưu</Text>
+              </>
             </TouchableHighlight>
           </View>
           <View style={styles.infoField}>
@@ -414,12 +429,6 @@ const DialogDetailView = memo(({userInfo, open, setOpen, saveAction}) => {
               value={value?.username}
               onChangeText={v => setValue({...value, username: v})}
               maxLength={101}
-              //   onBlur={v =>
-              //     setValue({
-              //       ...value,
-              //       username: v._dispatchInstances.memoizedProps.value,
-              //     })
-              //   }
             />
           </View>
           <RadioGroup
@@ -470,7 +479,7 @@ const DialogDetailView = memo(({userInfo, open, setOpen, saveAction}) => {
               renderInput={() => (
                 <FontAwesomeIcon
                   icon={faCalendarDay}
-                  style={{marginLeft: 6, color: app_color.color1}}
+                  style={{marginLeft: 6, color: COLOR.mainBlue}}
                 />
               )}
               dismiss
@@ -504,18 +513,18 @@ const DialogDetailView = memo(({userInfo, open, setOpen, saveAction}) => {
 const styles = StyleSheet.create({
   buttonText: {
     fontSize: 18,
-    color: '#212121',
+    color: COLOR.mainBlack,
     fontWeight: '400',
   },
   labelText: {
     fontSize: 16,
-    color: '#212121',
+    color: COLOR.mainBlack,
     fontWeight: '600',
     marginLeft: 6,
   },
   infoField: {
     marginHorizontal: 16,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: COLOR.mainGraySmoke,
     borderBottomWidth: 0.5,
     display: 'flex',
     flexDirection: 'row',

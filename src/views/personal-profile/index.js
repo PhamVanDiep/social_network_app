@@ -9,6 +9,7 @@ import ListFriendComponent from '../../components/friends/list/ListFriendCompone
 import PersonalProfile from '../../components/personal-profile';
 import UpdateInfoComponent from '../../components/personal-profile/update-info';
 import {selectAuth} from '../../store/auth/authSlice';
+import {COLOR} from '../../constants/constants';
 
 const ProfileStack = createNativeStackNavigator();
 
@@ -41,7 +42,7 @@ const AnotherProfileScreen = ({route, navigation}) => {
         justifyContent: 'center',
         backgroundColor: 'rgba(33,33,33,0.5)',
       }}>
-      <FontAwesomeIcon icon={faCircleExclamation} color="white" />
+      <FontAwesomeIcon icon={faCircleExclamation} color={COLOR.mainWhite} />
       <Text>Không thể truy cập</Text>
     </View>
   ) : (

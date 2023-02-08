@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
-import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Avatar } from 'react-native-ui-lib';
+import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {Avatar} from 'react-native-ui-lib';
 
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faEarthAsia } from '@fortawesome/free-solid-svg-icons/faEarthAsia';
-import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faEarthAsia} from '@fortawesome/free-solid-svg-icons/faEarthAsia';
+import {faCircleExclamation} from '@fortawesome/free-solid-svg-icons';
 import Video from 'react-native-video';
 
-import { faCircle } from '@fortawesome/free-solid-svg-icons/faCircle';
+import {faCircle} from '@fortawesome/free-solid-svg-icons/faCircle';
 
-import { faThumbsUp as solidFaThumbsUp } from '@fortawesome/free-solid-svg-icons/faThumbsUp';
-import { faThumbsUp } from '@fortawesome/free-regular-svg-icons/faThumbsUp';
-import { faMessage } from '@fortawesome/free-regular-svg-icons/faMessage';
+import {faThumbsUp as solidFaThumbsUp} from '@fortawesome/free-solid-svg-icons/faThumbsUp';
+import {faThumbsUp} from '@fortawesome/free-regular-svg-icons/faThumbsUp';
+import {faMessage} from '@fortawesome/free-regular-svg-icons/faMessage';
 
 import UserService from '../../helper/services/UserService';
-import Notification from "../../utils/Notification";
-import { setDateDiff } from "../../utils/utils";
+import Notification from '../../utils/Notification';
+import {setDateDiff} from '../../utils/utils';
 import PostService from '../../helper/services/PostService';
-import { COLOR } from '../../constants/constants';
+import {COLOR} from '../../constants/constants';
 
 const styles = StyleSheet.create({
   Container: {
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
   ActionTitle: {
     fontWeight: '500',
-    color: COLOR.text
+    color: COLOR.text,
   },
   Footer: {
     paddingVertical: 11,
@@ -123,12 +123,33 @@ const styles = StyleSheet.create({
   },
 });
 
-const Feed = ({ id, described, countComments, authorId, images, videos, likes, createdAt, isLike }) => {
+const Feed = ({
+  id,
+  described,
+  countComments,
+  authorId,
+  images,
+  videos,
+  likes,
+  createdAt,
+  isLike,
+}) => {
   const [author, setAuthor] = useState({});
   const [isSeeMore, setSeeMore] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [initIsLiked, setInitIsLiked] = useState(false);
   const [bonus, setBonus] = useState(0);
+  const params = {
+    id,
+    described,
+    countComments,
+    authorId,
+    images,
+    videos,
+    likes,
+    createdAt,
+    isLike,
+  };
 
   useEffect(() => {
     setIsLiked(isLike);
@@ -139,8 +160,10 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
         setAuthor(res.data.data);
       })
       .catch(error => {
-        Notification.showErrorMessage('Đã xảy ra lỗi khi lấy danh sách bài viết');
-      })
+        Notification.showErrorMessage(
+          'Đã xảy ra lỗi khi lấy danh sách bài viết',
+        );
+      });
   }, [authorId]);
 
   const handleLikePress = () => {
@@ -156,16 +179,20 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
         setIsLiked(!isLiked);
       })
       .catch(err => console.log(err));
-  }
+  };
 
   return (
     <>
       <View style={styles.Container}>
         <View style={styles.Header}>
           <View style={styles.Row}>
-            <Avatar source={{ uri: author.avatar }} size={36} onPress={() => handleAvatarPress(author._id)} />
-            <View style={{ paddingLeft: 10 }}>
-              <TouchableOpacity onPress={() => handleAvatarPress(author._id)}>
+            <Avatar
+              source={{uri: author.avatar}}
+              size={36}
+              onPress={() => handleAvatarPress(author?._id)}
+            />
+            <View style={{paddingLeft: 10}}>
+              <TouchableOpacity onPress={() => handleAvatarPress(author?._id)}>
                 <Text style={styles.User}>{author.username}</Text>
               </TouchableOpacity>
               <View style={styles.Row}>
@@ -173,10 +200,14 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
                 <FontAwesomeIcon
                   icon={faCircle}
                   size={2}
-                  color="#747476"
-                  style={{ marginRight: 4 }}
+                  color={COLOR.mainGray}
+                  style={{marginRight: 4}}
                 />
-                <FontAwesomeIcon icon={faEarthAsia} size={10} color="#747476" />
+                <FontAwesomeIcon
+                  icon={faEarthAsia}
+                  size={10}
+                  color={COLOR.mainGray}
+                />
               </View>
             </View>
           </View>
@@ -188,113 +219,129 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
               alignItems: 'center',
             }}>
             <TouchableOpacity onPress={() => showReportDialog(id)}>
-              <FontAwesomeIcon icon={faCircleExclamation} size={18} color="#222121" />
+              <FontAwesomeIcon
+                icon={faCircleExclamation}
+                size={18}
+                color={COLOR.mainBlack}
+              />
             </TouchableOpacity>
           </View>
         </View>
-        {
-          described.length > 36 && !isSeeMore ?
-            <View>
-              <TouchableOpacity onPress={(e) => (images?.length <= 1 || videos?.length == 1) ? e.preventDefault() :  handlePostDetail(id)}>
-                <Text numberOfLines={1} style={styles.Post}>
-                  {described}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setSeeMore(true)} style={{ fontSize: 16, marginLeft: 12 }}>
-                <Text style={{ fontSize: 15, color: COLOR.placeholder }}>Xem Thêm</Text>
-              </TouchableOpacity>
-            </View>
-            :
-            <TouchableOpacity onPress={(e) => (images?.length <= 1 || videos?.length == 1) ? e.preventDefault() :  handlePostDetail(id)}>
-              <Text style={styles.Post}>
+        {described.length > 36 && !isSeeMore ? (
+          <View>
+            <TouchableOpacity
+              onPress={e =>
+                images?.length <= 1 || videos?.length == 1
+                  ? e.preventDefault()
+                  : handlePostDetail(params, author.avatar, author.username)
+              }>
+              <Text numberOfLines={1} style={styles.Post}>
                 {described}
               </Text>
             </TouchableOpacity>
-        }
+            <TouchableOpacity
+              onPress={() => setSeeMore(true)}
+              style={{fontSize: 16, marginLeft: 12}}>
+              <Text style={{fontSize: 15, color: COLOR.placeholder}}>
+                Xem Thêm
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity
+            onPress={e =>
+              images?.length <= 1 || videos?.length == 1
+                ? e.preventDefault()
+                : handlePostDetail(params, author.avatar, author.username)
+            }>
+            <Text style={styles.Post}>{described}</Text>
+          </TouchableOpacity>
+        )}
 
-        {
-          images && images.length === 0 && (videos && videos.length === 0 || videos === null) && <View
-          />
-        }
-        {
-          videos?.length > 0 &&
-          <Video source={{ uri: videos[0] }}   // Can be a URL or a local file.
-            ref={(ref) => {
-              this.player = ref
+        {images &&
+          images.length === 0 &&
+          ((videos && videos.length === 0) || videos === null) && <View />}
+        {videos?.length > 0 && (
+          <Video
+            source={{uri: videos[0]}} // Can be a URL or a local file.
+            ref={ref => {
+              this.player = ref;
             }}
-            style={{ width: '100%', height: 450 }}        // Callback when video cannot be loaded
+            style={{width: '100%', height: 450}} // Callback when video cannot be loaded
             resizeMode={'cover'}
             controls={true} // Hien thi pause next, ...
-          // paused={true}
+            // paused={true}
           />
-        }
-        {
-          images?.length === 1 && <Image
-            style={styles.Photo}
-            source={{ uri: images[0] }}
-          />
-        }
-        {
-          images?.length === 2 &&
-          <TouchableOpacity onPress={() => handlePostDetail(id)}>
-            <View style={{ display: 'flex', width: '100%', height: 300, marginTop: 9, flexDirection: 'row' }}>
-              {images.map((image, index) => <Image
-                style={styles.PhotoHalf}
-                source={{ uri: images[index] }}
-              />
-              )
-              }
+        )}
+        {images?.length === 1 && (
+          <Image style={styles.Photo} source={{uri: images[0]}} />
+        )}
+        {images?.length === 2 && (
+          <TouchableOpacity onPress={() => handlePostDetail(params, author.avatar, author.username)}>
+            <View
+              style={{
+                display: 'flex',
+                width: '100%',
+                height: 300,
+                marginTop: 9,
+                flexDirection: 'row',
+              }}>
+              {images.map((image, index) => (
+                <Image style={styles.PhotoHalf} source={{uri: images[index]}}/>
+              ))}
             </View>
           </TouchableOpacity>
-        }
-        {
-          images?.length === 3 &&
-          <TouchableOpacity onPress={() => handlePostDetail(id)}>
-            <View style={{ display: 'flex', flexDirection: 'row', marginTop: 9 }}>
-              <View style={{ display: 'flex', flexDirection: 'column', width: '50%', height: 300 }}>
-                <Image
-                  style={styles.PhotoQuater}
-                  source={{ uri: images[0] }}
-                />
-                <Image
-                  style={styles.PhotoQuater}
-                  source={{ uri: images[1] }}
-                />
+        )}
+        {images?.length === 3 && (
+          <TouchableOpacity onPress={() => handlePostDetail(params, author.avatar, author.username)}>
+            <View style={{display: 'flex', flexDirection: 'row', marginTop: 9}}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  width: '50%',
+                  height: 300,
+                }}>
+                <Image style={styles.PhotoQuater} source={{uri: images[0]}} />
+                <Image style={styles.PhotoQuater} source={{uri: images[1]}} />
               </View>
-              <Image
-                style={styles.PhotoHalf}
-                source={{ uri: images[2] }}
-              />
+              <Image style={styles.PhotoHalf} source={{uri: images[2]}} />
             </View>
           </TouchableOpacity>
-        }
-        {
-          images?.length === 4 &&
-          <TouchableOpacity onPress={() => handlePostDetail(id)}>
-            <View style={{ display: 'flex', flexDirection: 'row', width: '100%', height: 300, marginTop: 9 }}>
-              <View style={{ display: 'flex', flexDirection: 'column', width: '50%', height: 300 }}>
-                <Image
-                  style={styles.PhotoQuater}
-                  source={{ uri: images[0] }}
-                />
-                <Image
-                  style={styles.PhotoQuater}
-                  source={{ uri: images[1] }}
-                />
+        )}
+        {images?.length === 4 && (
+          <TouchableOpacity onPress={() => handlePostDetail(params, author.avatar, author.username)}>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                width: '100%',
+                height: 300,
+                marginTop: 9,
+              }}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  width: '50%',
+                  height: 300,
+                }}>
+                <Image style={styles.PhotoQuater} source={{uri: images[0]}} />
+                <Image style={styles.PhotoQuater} source={{uri: images[1]}} />
               </View>
-              <View style={{ display: 'flex', flexDirection: 'column', width: '50%', height: 300 }}>
-                <Image
-                  style={styles.PhotoQuater}
-                  source={{ uri: images[2] }}
-                />
-                <Image
-                  style={styles.PhotoQuater}
-                  source={{ uri: images[3] }}
-                />
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  width: '50%',
+                  height: 300,
+                }}>
+                <Image style={styles.PhotoQuater} source={{uri: images[2]}} />
+                <Image style={styles.PhotoQuater} source={{uri: images[3]}} />
               </View>
             </View>
           </TouchableOpacity>
-        }
+        )}
 
         <View style={styles.Footer}>
           <View style={styles.FooterCount}>
@@ -306,7 +353,9 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
                   color="white"
                 />
               </View>
-              <Text style={styles.TextCount}>{likes.length + bonus} lượt thích</Text>
+              <Text style={styles.TextCount}>
+                {likes.length + bonus} lượt thích
+              </Text>
             </View>
             <TouchableOpacity onPress={() => handleCommentPress(id)}>
               <Text style={styles.TextCount}>{countComments} bình luận</Text>
@@ -314,34 +363,58 @@ const Feed = ({ id, described, countComments, authorId, images, videos, likes, c
           </View>
 
           <View style={styles.Separator} />
-          <View style={{ width: '100%', height: 1, backgroundColor: '#F2F4F4', marginTop: 5 }} />
+          <View
+            style={{
+              width: '100%',
+              height: 1,
+              backgroundColor: '#F2F4F4',
+              marginTop: 5,
+            }}
+          />
           <View style={styles.FooterMenu}>
             <View style={styles.Button}>
               <View style={styles.Icon}>
                 <TouchableOpacity onPress={() => handleLikePress()}>
-                  {isLiked ? <FontAwesomeIcon
-                    icon={solidFaThumbsUp}
-                    size={20}
-                    color={COLOR.icon}
-                  /> : <FontAwesomeIcon icon={faThumbsUp} size={20} color="#424040" />}
+                  {isLiked ? (
+                    <FontAwesomeIcon
+                      icon={solidFaThumbsUp}
+                      size={20}
+                      color={COLOR.icon}
+                    />
+                  ) : (
+                    <FontAwesomeIcon
+                      icon={faThumbsUp}
+                      size={20}
+                      color={COLOR.mainBlack}
+                    />
+                  )}
                 </TouchableOpacity>
               </View>
               <TouchableOpacity onPress={() => handleLikePress()}>
-                <Text style={[styles.ActionTitle, { color: isLiked ? COLOR.icon : COLOR.text }]}>Thích</Text>
+                <Text
+                  style={[
+                    styles.ActionTitle,
+                    {color: isLiked ? COLOR.icon : COLOR.text},
+                  ]}>
+                  Thích
+                </Text>
               </TouchableOpacity>
             </View>
 
             <View style={[styles.Button]}>
               <View style={[styles.Icon, styles.ButtonComment]}>
                 <TouchableOpacity onPress={() => handleCommentPress(id)}>
-                  <FontAwesomeIcon icon={faMessage} size={19} color="#424040" />
+                  <FontAwesomeIcon
+                    icon={faMessage}
+                    size={19}
+                    color={COLOR.mainBlack}
+                  />
                 </TouchableOpacity>
               </View>
               <TouchableOpacity onPress={() => handleCommentPress(id)}>
                 <Text style={styles.ActionTitle}>Bình luận</Text>
               </TouchableOpacity>
             </View>
-
           </View>
         </View>
         <View style={styles.BottomDivider} />

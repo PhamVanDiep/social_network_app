@@ -1,3 +1,4 @@
+import {COLOR} from '../../constants/constants';
 import {
   Dimensions,
   Image,
@@ -43,7 +44,7 @@ const FriendList = ({navigation, data, hide}) => {
                 <Text
                   style={{
                     textAlign: 'right',
-                    color: 'blue',
+                    color: COLOR.mainBlue,
                     fontSize: 18,
                   }}>
                   Xem tất cả bạn bè
@@ -77,7 +78,11 @@ const FriendList = ({navigation, data, hide}) => {
                       <Image
                         style={[
                           styles.avaterImage,
-                          {width: d, height: d, backgroundColor: '#e0e0e0'},
+                          {
+                            width: d,
+                            height: d,
+                            backgroundColor: COLOR.mainGraySmoke,
+                          },
                         ]}
                         source={{uri: friend.avatar}}
                       />
@@ -118,7 +123,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'space-between',
   },
   avaterImage: {
-    resizeMode: 'contain',
+    resizeMode: 'center',
     borderRadius: 12,
   },
   friend: {
@@ -137,7 +142,7 @@ const styles = StyleSheet.create({
   textBtn: {
     textAlign: 'center',
     fontSize: 16,
-    color: '#212121',
+    color: COLOR.mainBlack,
   },
 });
 export default FriendList;

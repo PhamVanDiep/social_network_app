@@ -1,26 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
+import {Image, ScrollView} from 'react-native';
 import {
   Avatar,
-  Incubator,
-  View,
-  Text,
-  Checkbox,
-  Colors,
   Button,
-  Icon,
+  Checkbox,
+  Incubator,
+  Text,
+  View,
 } from 'react-native-ui-lib';
-import _ from 'lodash';
-import UserService from '../helper/services/UserService';
-import { Image, SafeAreaView, ScrollView } from 'react-native';
-import Notification from '../utils/Notification';
 import MyButton from '../components/button';
-import { buttonColor } from '../constants/theme/config';
-import { COLOR } from '../constants/constants';
-const { TextField } = Incubator;
+import {COLOR} from '../constants/constants';
+import UserService from '../helper/services/UserService';
+import Notification from '../utils/Notification';
+const {TextField} = Incubator;
 const options = ['Nam', 'Nữ'];
 const logo = require('../../assets/image/Logo.png');
 
-const Register = ({ navigation }) => {
+const Register = ({navigation}) => {
   const [name, setName] = useState('');
   const [phonenumber, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -71,7 +67,7 @@ const Register = ({ navigation }) => {
   return (
     <ScrollView>
       <View>
-        <View style={{ width: '100%', height: 200, alignItems: 'center' }}>
+        <View style={{width: '100%', height: 200, alignItems: 'center'}}>
           <Image
             source={require('../../assets/images/cover.png')}
             resizeMode="cover"
@@ -94,7 +90,7 @@ const Register = ({ navigation }) => {
         <View centerV paddingH-32>
           <View>
             <TextField
-              fieldStyle={{ borderBottomWidth: 1, padding: 2 }}
+              fieldStyle={{borderBottomWidth: 1, padding: 2}}
               placeholder="Họ tên"
               floatingPlaceholder
               onChangeText={value => setName(value)}
@@ -111,7 +107,7 @@ const Register = ({ navigation }) => {
           </View>
           <View>
             <TextField
-              fieldStyle={{ borderBottomWidth: 1, padding: 2 }}
+              fieldStyle={{borderBottomWidth: 1, padding: 2}}
               placeholder={'Số điện thoại'}
               floatingPlaceholder
               onChangeText={value => setPhone(value)}
@@ -133,7 +129,7 @@ const Register = ({ navigation }) => {
           </View>
           <View>
             <TextField
-              fieldStyle={{ borderBottomWidth: 1, padding: 2 }}
+              fieldStyle={{borderBottomWidth: 1, padding: 2}}
               placeholder={'Mật khẩu'}
               floatingPlaceholder
               onChangeText={value => setPassword(value)}
@@ -151,7 +147,7 @@ const Register = ({ navigation }) => {
 
           <View>
             <TextField
-              fieldStyle={{ borderBottomWidth: 1, padding: 2 }}
+              fieldStyle={{borderBottomWidth: 1, padding: 2}}
               placeholder={'Xác nhận mật khẩu'}
               floatingPlaceholder
               onChangeText={value => setConfirmPass(value)}
@@ -181,9 +177,9 @@ const Register = ({ navigation }) => {
           <View marginT-10>
             <MyButton
               label="Đăng ký"
-              backgroundColor={buttonColor.color1}
-              color={'white'}
-              rippleColor="#6868ff"
+              backgroundColor={COLOR.mainBlue}
+              color={COLOR.mainWhite}
+              rippleColor={COLOR.mainBlue}
               onPress={() => register(name, phonenumber, password)}
               disabled={!validForm}
             />
@@ -200,13 +196,12 @@ const Register = ({ navigation }) => {
               onPress={() => {
                 navigation.reset({
                   index: 0,
-                  routes: [{ name: 'LogIn' }],
+                  routes: [{name: 'LogIn'}],
                 });
               }}></Button>
           </View>
         </View>
       </View>
-
     </ScrollView>
   );
 };
