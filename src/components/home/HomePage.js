@@ -38,7 +38,7 @@ const HomePageComponent = ({navigation}) => {
 
   useEffect(() => {
     setRefreshing(true);
-    loadData(0, 10);
+    loadData(0, 5);
   }, []);
 
   useEffect(() => {
@@ -69,7 +69,7 @@ const HomePageComponent = ({navigation}) => {
   const onRefresh = () => {
     setRefreshing(true);
     setFeeds([]);
-    loadData(0, 10);
+    loadData(0, 5);
   };
 
   handleAvatarPress = id => {
