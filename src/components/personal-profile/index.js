@@ -1,3 +1,4 @@
+import {COLOR} from '../../constants/constants';
 import {useEffect, useState} from 'react';
 import {SafeAreaView, ScrollView, View} from 'react-native';
 import {LoaderScreen} from 'react-native-ui-lib';
@@ -67,7 +68,7 @@ const PersonalProfile = ({userId, navigation}) => {
             height: '100%',
             backgroundColor: 'rgba(33,33,33,0.5)',
           }}>
-          <LoaderScreen color={'white'} />
+          <LoaderScreen color={COLOR.mainWhite} />
         </View>
       )}
     </SafeAreaView>

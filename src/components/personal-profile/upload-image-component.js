@@ -1,18 +1,25 @@
-import UserService from '../../helper/services/UserService';
 import {faImages} from '@fortawesome/free-regular-svg-icons/faImages';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {useEffect, useState} from 'react';
-import {Image} from 'react-native';
-import {Text, View, TouchableHighlight, StyleSheet} from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {Dialog} from 'react-native-ui-lib';
-import {FIREBASE_CONFIG} from '../../constants/constants';
+import {COLOR, FIREBASE_CONFIG} from '../../constants/constants';
+import UserService from '../../helper/services/UserService';
 import Notification from '../../utils/Notification';
 import {uploadImageToFirebase} from '../../utils/upload_image';
 
 const UploadImageProfile = ({type, open, setOpen, userInfo, callback}) => {
   const [asset, setAsset] = useState('');
   const [run, setRun] = useState(true);
+  const [loading, setLoading] = useState(false);
   const runImageLibrary = async () => {
     let options = {
       mediaType: 'photo',
@@ -38,7 +45,7 @@ const UploadImageProfile = ({type, open, setOpen, userInfo, callback}) => {
   };
 
   const handleUploadPhoto = async () => {
-    // setLoading(true);
+    setLoading(true);
     // console.log(
     //   'asset before upload to firebase',
     //   asset,
@@ -46,20 +53,25 @@ const UploadImageProfile = ({type, open, setOpen, userInfo, callback}) => {
     // );
     const images = await uploadImageToFirebase(
       asset,
-      `${type == 1 ? FIREBASE_CONFIG.AVATAR_STORAGE : FIREBASE_CONFIG.COVER_IMAGE_STORAGE}/${userInfo.phonenumber}`,
+      `${
+        type == 1
+          ? FIREBASE_CONFIG.AVATAR_STORAGE
+          : FIREBASE_CONFIG.COVER_IMAGE_STORAGE
+      }/${userInfo.phonenumber}`,
     );
-    const requestBody = type == 1 ? {avatar: images[0]} : {cover_image: images[0]};
+    const requestBody =
+      type == 1 ? {avatar: images[0]} : {cover_image: images[0]};
     // console.log(requestBody);
     await UserService.edit(requestBody)
       .then(res => {
         // console.log('dcm------', res);
         callback();
+        setLoading(false);
         setOpen(false);
       })
       .catch(e => {
         console.log(e);
       });
-    // setLoading(false);
   };
 
   useEffect(() => {
@@ -82,7 +94,7 @@ const UploadImageProfile = ({type, open, setOpen, userInfo, callback}) => {
         style={{
           width: '100%',
           height: '100%',
-          backgroundColor: 'white',
+          backgroundColor: COLOR.background,
           display: 'flex',
         }}>
         <View
@@ -90,7 +102,7 @@ const UploadImageProfile = ({type, open, setOpen, userInfo, callback}) => {
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
-            borderBottomColor: '#e0e0e0',
+            borderBottomColor: COLOR.mainGraySmoke,
             borderBottomWidth: 0.5,
             padding: 16,
             paddingBottom: 24,
@@ -107,7 +119,17 @@ const UploadImageProfile = ({type, open, setOpen, userInfo, callback}) => {
             onPress={() => {
               handleUploadPhoto();
             }}>
-            <Text style={styles.buttonText}>Lưu</Text>
+            <>
+              {loading && (
+                <ActivityIndicator
+                  style={{position: 'absolute', right: 32, top: 2}}
+                  animating={loading}
+                  size="small"
+                  color={COLOR.mainBlack}
+                />
+              )}
+              <Text style={styles.buttonText}>Lưu</Text>
+            </>
           </TouchableHighlight>
         </View>
         <View
@@ -122,13 +144,13 @@ const UploadImageProfile = ({type, open, setOpen, userInfo, callback}) => {
           }}>
           <Image
             style={{
-              backgroundColor: '#e0e0e0',
+              backgroundColor: COLOR.mainGraySmoke,
               borderRadius: type == 1 ? 200 : 12,
               width: type == 1 ? 200 : '100%',
               height: type == 1 ? 200 : '100%',
               resizeMode: 'cover',
               borderWidth: type == 1 ? 6 : 0,
-              borderColor: '#e0e0e0',
+              borderColor: COLOR.mainGraySmoke,
             }}
             source={asset}
           />
@@ -140,7 +162,7 @@ const UploadImageProfile = ({type, open, setOpen, userInfo, callback}) => {
             setRun(true);
           }}>
           <>
-            <Text style={{fontSize: 16, color: '#212121'}}>
+            <Text style={{fontSize: 16, color: COLOR.mainBlack}}>
               {'Chọn ảnh khác '}
             </Text>
             <FontAwesomeIcon icon={faImages} />
@@ -153,12 +175,12 @@ const UploadImageProfile = ({type, open, setOpen, userInfo, callback}) => {
 const styles = StyleSheet.create({
   buttonText: {
     fontSize: 18,
-    color: '#212121',
+    color: COLOR.mainBlack,
     fontWeight: '400',
   },
   labelText: {
     fontSize: 16,
-    color: '#212121',
+    color: COLOR.mainBlack,
     fontWeight: '600',
     marginLeft: 6,
   },

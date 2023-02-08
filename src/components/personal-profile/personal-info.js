@@ -1,3 +1,4 @@
+import {COLOR} from '../../constants/constants';
 import {faCakeCandles} from '@fortawesome/free-solid-svg-icons/faCakeCandles';
 import {faHouse} from '@fortawesome/free-solid-svg-icons/faHouse';
 import {faLocationDot} from '@fortawesome/free-solid-svg-icons/faLocationDot';
@@ -51,12 +52,12 @@ const styles = StyleSheet.create({
   },
   descriptionContainer: {
     borderTopWidth: 1,
-    borderTopColor: '#b9b9b9',
+    borderTopColor: COLOR.mainGraySmoke,
   },
   label: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#212121',
+    color: COLOR.mainBlack,
     paddingVertical: 10,
   },
   item: {

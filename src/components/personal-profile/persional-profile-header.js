@@ -1,3 +1,4 @@
+import {COLOR} from '../../constants/constants';
 import {faCamera} from '@fortawesome/free-solid-svg-icons/faCamera';
 import {faXmark} from '@fortawesome/free-solid-svg-icons/faXmark';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
@@ -41,7 +42,7 @@ const PersonalProfileHeader = ({userInfo, isGuest, callback}) => {
             <Image
               style={[
                 styles.coverBackgroundImage,
-                {backgroundColor: '#e0e0e0'},
+                {backgroundColor: COLOR.mainGraySmoke},
               ]}
               source={{
                 uri: userInfo.cover_image,
@@ -66,9 +67,8 @@ const PersonalProfileHeader = ({userInfo, isGuest, callback}) => {
                 style={{
                   width: '100%',
                   height: '100%',
-                  backgroundColor: '#e0e0e0',
+                  backgroundColor: COLOR.mainGraySmoke,
                 }}
-                resizeMode={'contain'}
               />
             </TouchableHighlight>
             {isGuest ? (
@@ -211,7 +211,7 @@ const ImageView = memo(({imageSrc, open, setOpen, defaultImage}) => {
             right: 0,
             position: 'absolute',
           }}>
-          <FontAwesomeIcon icon={faXmark} style={{color: 'white'}} />
+          <FontAwesomeIcon icon={faXmark} style={{color: COLOR.mainWhite}} />
         </TouchableHighlight>
         {!!imageSrc ? (
           <Image
@@ -223,7 +223,7 @@ const ImageView = memo(({imageSrc, open, setOpen, defaultImage}) => {
             resizeMode={'contain'}
           />
         ) : (
-          <LoaderScreen color={'white'} />
+          <LoaderScreen color={COLOR.mainWhite} />
         )}
       </View>
     </Dialog>
@@ -251,15 +251,15 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 100,
     borderWidth: 10,
-    borderColor: '#fefefe',
+    borderColor: COLOR.mainWhite,
     overflow: 'hidden',
-    resizeMode: 'contain',
+    resizeMode: 'cover',
   },
   cameraIcon: {
     width: 40,
     height: 40,
     borderRadius: 40,
-    backgroundColor: '#d0d0d0',
+    backgroundColor: COLOR.mainGraySmoke,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
@@ -273,14 +273,14 @@ const styles = StyleSheet.create({
     left: 16,
   },
   name: {
-    color: '#212121',
+    color: COLOR.mainBlack,
     fontSize: 28,
     fontWeight: '700',
   },
   label: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#212121',
+    color: COLOR.mainBlack,
     paddingVertical: 10,
   },
   description: {
