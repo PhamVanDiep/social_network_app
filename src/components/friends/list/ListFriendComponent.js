@@ -108,8 +108,8 @@ const ListFriendComponent = () => {
         }
         UserService.blockDiary(body)
             .then(res => {
-                setProfile(res.data.data);
-                setBlockDiary(res.data.data.blocked_diary);
+                // setProfile(res.data.data);
+                // setBlockDiary(res.data.data.blocked_diary);
                 let temp = [];
                 tmp.forEach(element => {
                     if (element._id != selectedFriend) {
