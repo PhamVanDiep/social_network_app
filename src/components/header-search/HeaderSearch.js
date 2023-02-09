@@ -1,29 +1,27 @@
-import {View, Text, StyleSheet, TouchableHighlight} from 'react-native';
-import React from 'react';
-import ArrowLeftIcon from '../../../assets/icon/ArrowLeftIcon';
-import { useState } from 'react';
-import InputBar from '../input-bar';
+import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faSearch, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { COLOR } from '../../constants/constants';
 
-const HeaderSearch = ({navigation, setSearchKeyword, actionFn}) => {
-  
+const HeaderSearch = () => {
+
+  const [keyword, setKeyword] = useState('');
+
   return (
     <View style={styles.container}>
-      <TouchableHighlight
-        underlayColor={'#e1e1e1'}
-        onPress={() => {
-          navigation.goBack();
-        }}
-        style={{
-          padding: 12,
-          borderRadius: 32,
-        }}>
-        <ArrowLeftIcon />
-      </TouchableHighlight>
-      <InputBar
-          placeholder={'Tìm kiếm'}
-          setInput={setSearchKeyword}
-          actionFn={actionFn}
-        />
+      <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => handleGoback()}>
+        <FontAwesomeIcon size={28} icon={faArrowLeft} />
+      </TouchableOpacity>
+      <TextInput
+        placeholder={'Tìm kiếm'}
+        placeholderTextColor={COLOR.placeholder}
+        style={{ color: COLOR.text, width: '75%', fontSize: 18 }}
+        onChangeText={value => setKeyword(value)}
+      />
+      <TouchableOpacity style={{ marginRight: 10 }} onPress={() => handleSearch(keyword)}>
+        <FontAwesomeIcon size={24} icon={faSearch} color={COLOR.text} />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -33,15 +31,9 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  searchBar: {
-    marginHorizontal: 16,
-    marginVertical: 4,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: '#e1e1e1',
-    flex: 1,
-    borderRadius: 50,
+    height: 50,
+    backgroundColor: COLOR.background,
+    justifyContent: 'space-between'
   },
 });
 export default HeaderSearch;

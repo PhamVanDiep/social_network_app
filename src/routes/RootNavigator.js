@@ -21,7 +21,7 @@ import NewConversation from '../views/Chat/NewConversation';
 import {UploadImage} from '../test/upload';
 import ProfileScreen from '../views/personal-profile';
 import DetailPost from '../components/detail_post';
-import Homepage from '../views/Homepage';
+import Homepage from '../views/HomePage';
 import SearchPage from '../views/SearchPage';
 
 const Stack = createNativeStackNavigator();
