@@ -1,18 +1,14 @@
-import React, {useState, useEffect} from 'react';
-
+import React, { useState, useEffect } from 'react';
+import { Tab, TabView } from '@rneui/themed';
 import {
-  Animated,
   StatusBar,
   ScrollView,
   View,
-  StyleSheet,
   Text,
   TouchableOpacity,
   Button,
 } from 'react-native';
-import {TabView, SceneMap, ViewPagerBackend} from 'react-native-tab-view';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {Avatar} from 'react-native-ui-lib';
+import { Avatar } from 'react-native-ui-lib';
 
 import Feed from '../components/home/Feed';
 import HeaderSearch from '../components/header-search/HeaderSearch';
@@ -21,11 +17,12 @@ import PostService from '../helper/services/PostService';
 import UserService from '../helper/services/UserService';
 import FriendService from '../helper/services/FriendService';
 import { Alert } from 'react-native';
-import ButtonFunction from '../components/personal-profile/button-function';
+import { COLOR } from '../constants/constants';
 
 const styles = {
   Container: {
     flex: 1,
+    backgroundColor: COLOR.background
   },
   tabBar: {
     flexDirection: 'row',
@@ -64,54 +61,16 @@ const styles = {
   },
 };
 
-const SearchPage = ({navigation}) => {
-  const [searchPageType, setSearchPageType] = useState('post');
-  const [keyword, setKeyword] = useState('');
-  const [navbarItemActiveIndex, setNavbarItemActiveIndex] = useState(0);
+const SearchPage = ({ navigation }) => {
   const sortFnc = (a, b) => (b.createdAt > a.createdAt ? 1 : -1);
   const [searchPosts, setSearchPosts] = useState([]);
   const [searchUsers, setSearchUsers] = useState([]);
-  if (searchPageType === 'post') {
-    useEffect(() => {
-      PostService.search({keyword: ''})
-        .then(res => {
-          console.log('res: ' + res.data.data);
-          setSearchPosts(res.data.data);
-          console.log(res.data.data.length);
-        })
-        .catch(error => {
-          Notification.showErrorMessage('Đã xảy ra lỗi khi tìm kiếm bài viết');
-        });
-    }, []);
-  } else {
-    useEffect(() => {
-      UserService.search({keyword: ''})
-        .then(res => {
-          console.log('res: ' + res.data.data);
-          setSearchUsers(res.data.data);
-          console.log(res.data.data.length);
-        })
-        .catch(error => {
-          Notification.showErrorMessage(
-            'Đã xảy ra lỗi khi tìm kiếm người dùng',
-          );
-        });
-    }, []);
-  }
+  const [index, setIndex] = useState(0);
 
   const searchFuntion = keyword => {
-    if (searchPageType === 'post') {
-      PostService.search({keyword: keyword})
-        .then(res => {
-          console.log('res: ' + res.data.data);
-          setSearchPosts(res.data.data);
-          console.log(res.data.data.length);
-        })
-        .catch(error => {
-          Notification.showErrorMessage('Đã xảy ra lỗi khi tìm kiếm bài viết');
-        });
-    } else {
-      UserService.search({keyword: keyword})
+    
+    if (index) {
+      UserService.search({ keyword: keyword })
         .then(res => {
           console.log('res: ' + res.data.data);
           setSearchUsers(res.data.data);
@@ -121,6 +80,16 @@ const SearchPage = ({navigation}) => {
           Notification.showErrorMessage(
             'Đã xảy ra lỗi khi tìm kiếm người dùng',
           );
+        });
+    } else {
+      PostService.search({ keyword: keyword })
+        .then(res => {
+          console.log('res: ' + res.data.data);
+          setSearchPosts(res.data.data);
+          console.log(res.data.data.length);
+        })
+        .catch(error => {
+          Notification.showErrorMessage('Đã xảy ra lỗi khi tìm kiếm bài viết');
         });
     }
   };
@@ -128,7 +97,9 @@ const SearchPage = ({navigation}) => {
   const PostList = () => {
     return (
       <ScrollView>
-        {searchPosts.sort(sortFnc).length > 0 &&
+        {
+          searchPosts.length > 0 
+          ?
           searchPosts.map(item => (
             <View key={item._id}>
               <Feed
@@ -143,16 +114,21 @@ const SearchPage = ({navigation}) => {
                 isLike={item.isLike}
               />
             </View>
-          ))}
+          ))
+          :
+          <Text style={{ color: COLOR.text, fontSize: 18, fontWeight: 'bold' }}>
+            Không có bài viết nào được tìm thấy.
+          </Text>
+        }
       </ScrollView>
     );
   };
 
   const handleAvatarPress = id => {
-    navigation.navigate('ProfileScreen', {userId: id});
+    navigation.navigate('ProfileScreen', { userId: id });
   };
 
-  const User = ({id, username, address, avatar}) => {
+  const User = ({ id, username, address, avatar }) => {
     const [friendStatus, setFriendStatus] = useState('-1');
     try {
       FriendService.status(id).then(res => {
@@ -169,7 +145,7 @@ const SearchPage = ({navigation}) => {
     if (friendStatus.toString() === '-1') {
       title = 'Gửi lời mời kết bạn';
       btnFn = () => {
-        FriendService.sendRequest({user_id: id})
+        FriendService.sendRequest({ user_id: id })
           .then(res => {
             Alert.alert(res.data.message);
           })
@@ -180,7 +156,7 @@ const SearchPage = ({navigation}) => {
     } else if (friendStatus.toString() === '0') {
       title = 'Hủy lời mời kết bạn';
       btnFn = () => {
-        FriendService.cancelSendRequest({user_id: id})
+        FriendService.cancelSendRequest({ user_id: id })
           .then(res => {
             Alert.alert(res.data.message);
           })
@@ -194,14 +170,14 @@ const SearchPage = ({navigation}) => {
     }
 
     return (
-      <View style={{marginTop: 10}}>
+      <View style={{ marginTop: 10 }}>
         <View style={styles.Row}>
           <Avatar
-            source={{uri: avatar}}
+            source={{ uri: avatar }}
             size={36}
             onPress={() => handleAvatarPress(id)}
           />
-          <View style={{paddingLeft: 10}}>
+          <View style={{ paddingLeft: 10 }}>
             <TouchableOpacity onPress={() => handleAvatarPress(id)}>
               <Text style={styles.User}>{username}</Text>
             </TouchableOpacity>
@@ -221,7 +197,9 @@ const SearchPage = ({navigation}) => {
     console.log(searchUsers);
     return (
       <ScrollView>
-        {searchUsers.sort(sortFnc).length > 0 &&
+        {
+          searchUsers.length > 0 
+          ?
           searchUsers.map(item => (
             <View key={item._id}>
               <User
@@ -231,75 +209,67 @@ const SearchPage = ({navigation}) => {
                 avatar={item.avatar}
               />
             </View>
-          ))}
+          ))
+          :
+          <Text style={{ color: COLOR.text, fontSize: 18, fontWeight: 'bold' }}>
+            Không có người dùng nào được tìm thấy.
+          </Text>
+        }
       </ScrollView>
     );
   };
 
-  const [navigationState, setNavigationState] = useState({
-    index: 0,
-    routes: [
-      {
-        key: 'post',
-        title: 'Bài viết',
-      },
-      {
-        key: 'user',
-        title: 'Mọi người',
-      },
-    ],
-  });
+  handleGoback = () => {
+    navigation.goBack();
+  }
 
-  const renderScene = SceneMap({
-    post: PostList,
-    user: UserList,
-  });
-
-  // _renderTabbar = (props) => {
-  //     const inputRange = props.navigationState.routes.map((x, i) => i);
-  //     return (
-  //         <View style={styles.tabBar}>
-  //             {props.navigationState.routes.map((route, i) => {
-  //             const opacity = props.position.interpolate({
-  //                 inputRange,
-  //                 outputRange: inputRange.map((inputIndex) =>
-  //                 inputIndex === i ? 1 : 0.5
-  //                 ),
-  //             });
-
-  //             return (
-  //                 <TouchableOpacity
-  //                 style={styles.tabItem}
-  //                 onPress={() => this.setState({ index: i })}>
-  //                 <Animated.Text style={{ opacity, color: '#7E41BB' }}>{route.title}</Animated.Text>
-  //                 </TouchableOpacity>
-  //             );
-  //             })}
-  //         </View>
-  //     );
-  // }
+  handleSearch = (keyword) => {
+    if (keyword != null && keyword != undefined && keyword.length > 0) {
+      searchFuntion(keyword);
+    }
+  }
 
   return (
     <>
       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
       <HeaderSearch
         navigation={navigation}
-        setSearchKeyword={setKeyword}
-        actionFn={() => searchFuntion(keyword)}
       />
       <View style={styles.Container}>
-        <TabView
-          navigationState={navigationState}
-          renderScene={renderScene}
-          onIndexChange={index => {
-            setNavigationState({...navigationState, index: index});
-            setSearchPageType(navigationState.routes[index].key);
-          }}
-          // renderTabBar={this._renderTabbar}
-          renderPager={props => (
-            <ViewPagerBackend {...props} transitionStyle="curl" />
-          )}
-        />
+        <View style={{ width: '100%', height: '100%' }}>
+          <Tab
+            value={index}
+            onChange={(e) => setIndex(e)}
+            indicatorStyle={{ backgroundColor: COLOR.icon }}
+            style={{ width: '100%', backgroundColor: '#E5E8E8' }}
+          >
+            <Tab.Item
+              title="Bài viết"
+              titleStyle={(active) => ({
+                color: active ? COLOR.icon : COLOR.text,
+                fontSize: 18,
+                fontFamily: 'Roboto'
+              })}
+            />
+            <Tab.Item
+              title="Mọi người"
+              titleStyle={(active) => ({
+                color: active ? COLOR.icon : COLOR.text,
+                fontSize: 18,
+                fontFamily: 'Roboto'
+              })}
+            />
+          </Tab>
+
+          <TabView value={index} onChange={setIndex} animationType="spring">
+            <TabView.Item style={{ width: '100%' }}>
+              <PostList />
+            </TabView.Item>
+            <TabView.Item style={{ width: '100%' }}>
+              <UserList />
+            </TabView.Item>
+          </TabView>
+        </View>
       </View>
     </>
   );
